@@ -1,0 +1,1363 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ISN Chess League</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            padding: 30px 0;
+            background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(220, 20, 60, 0.3);
+            border: 2px solid #dc143c;
+        }
+
+        .logo-container {
+            margin-bottom: 20px;
+        }
+
+        .logo {
+            max-width: 200px;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(220, 20, 60, 0.4);
+        }
+
+        h1 {
+            font-size: 2.5em;
+            color: #dc143c;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+            margin-bottom: 10px;
+        }
+
+        h1::before {
+            content: "♔ ";
+        }
+
+        h1::after {
+            content: " ♚";
+        }
+
+        .contact {
+            color: #cccccc;
+            font-size: 0.9em;
+            margin-top: 10px;
+        }
+
+        .contact a {
+            color: #dc143c;
+            text-decoration: none;
+        }
+
+        .contact a:hover {
+            text-decoration: underline;
+        }
+
+        .section {
+            background: rgba(26, 26, 26, 0.8);
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            border: 1px solid #333333;
+        }
+
+        h2 {
+            color: #dc143c;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #dc143c;
+            font-size: 1.8em;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        th {
+            background: #000000;
+            color: #dc143c;
+            padding: 12px;
+            text-align: left;
+            font-weight: bold;
+            border: 1px solid #333333;
+        }
+
+        td {
+            padding: 10px 12px;
+            border: 1px solid #333333;
+            background: rgba(20, 20, 20, 0.8);
+        }
+
+        tr:hover td {
+            background: rgba(220, 20, 60, 0.1);
+        }
+
+        .rank-1 td:first-child {
+            color: #FFD700;
+            font-weight: bold;
+        }
+
+        .rank-2 td:first-child {
+            color: #C0C0C0;
+            font-weight: bold;
+        }
+
+        .rank-3 td:first-child {
+            color: #CD7F32;
+            font-weight: bold;
+        }
+
+        button {
+            background: #dc143c;
+            color: #ffffff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1em;
+            transition: all 0.3s;
+            margin: 5px;
+        }
+
+        button:hover {
+            background: #ff1a4f;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(220, 20, 60, 0.5);
+        }
+
+        button.secondary {
+            background: #555555;
+            color: white;
+        }
+
+        button.secondary:hover {
+            background: #777777;
+        }
+
+        button.danger {
+            background: #8b0000;
+            color: white;
+        }
+
+        button.danger:hover {
+            background: #a00000;
+        }
+
+        input, select, textarea {
+            padding: 8px 12px;
+            border-radius: 5px;
+            border: 1px solid #333333;
+            background: rgba(20, 20, 20, 0.9);
+            color: #ffffff;
+            font-size: 1em;
+            margin: 5px;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #dc143c;
+            box-shadow: 0 0 10px rgba(220, 20, 60, 0.4);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+            margin: 50px auto;
+            padding: 30px;
+            width: 90%;
+            max-width: 600px;
+            border-radius: 15px;
+            box-shadow: 0 15px 50px rgba(220, 20, 60, 0.5);
+            border: 2px solid #dc143c;
+        }
+
+        .close {
+            color: #dc143c;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            line-height: 20px;
+        }
+
+        .close:hover {
+            color: #ff1a4f;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #dc143c;
+            font-weight: bold;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            margin: 0;
+        }
+
+        .admin-section {
+            display: none;
+        }
+
+        .news-item {
+            background: rgba(20, 20, 20, 0.8);
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #dc143c;
+        }
+
+        .news-item h3 {
+            color: #dc143c;
+            margin-bottom: 8px;
+        }
+
+        .news-date {
+            color: #cccccc;
+            font-size: 0.85em;
+            font-style: italic;
+            margin-bottom: 10px;
+        }
+
+        .match-result {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            margin: 10px 0;
+            background: rgba(20, 20, 20, 0.8);
+            border-radius: 5px;
+            border-left: 3px solid #dc143c;
+        }
+
+        .match-result .player {
+            flex: 1;
+            text-align: center;
+        }
+
+        .match-result .score {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #dc143c;
+            padding: 0 20px;
+        }
+
+        .winner {
+            color: #32cd32;
+            font-weight: bold;
+        }
+
+        .admin-controls {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .chess-piece {
+            font-size: 1.2em;
+            margin-right: 5px;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            background: #32cd32;
+            color: #000000;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            z-index: 2000;
+            display: none;
+            font-weight: bold;
+        }
+
+        .round-info {
+            background: rgba(220, 20, 60, 0.1);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid #dc143c;
+        }
+
+        .round-info h3 {
+            color: #dc143c;
+            margin-bottom: 10px;
+        }
+
+        .playoff-bracket {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .playoff-match {
+            background: rgba(20, 20, 20, 0.8);
+            padding: 15px;
+            border-radius: 8px;
+            border: 2px solid #dc143c;
+        }
+
+        .playoff-match h4 {
+            color: #dc143c;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .playoff-player {
+            padding: 10px;
+            margin: 5px 0;
+            background: rgba(30, 30, 30, 0.8);
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .playoff-winner {
+            border: 2px solid #32cd32;
+            font-weight: bold;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .tab {
+            background: #333333;
+            color: #ffffff;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .tab:hover {
+            background: #555555;
+        }
+
+        .tab.active {
+            background: #dc143c;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="notification" id="notification"></div>
+    
+    <div class="container">
+        <header>
+            <div class="logo-container">
+                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==" alt="ISN Chess League Logo" class="logo" id="logoImg">
+            </div>
+            <h1>ISN Chess League</h1>
+            <p class="contact">Contact: <a href="mailto:chess@isn-neustadt.de">chess@isn-neustadt.de</a></p>
+        </header>
+
+        <div class="admin-controls">
+            <button onclick="showAdminLogin()">Admin Login</button>
+            <button onclick="logout()" class="danger" style="display:none;" id="logoutBtn">Logout</button>
+        </div>
+
+        <!-- News Section -->
+        <div class="section">
+            <h2>📰 League News</h2>
+            <div id="newsContainer"></div>
+            <div class="admin-section" id="adminNewsControls">
+                <button onclick="showAddNewsModal()">Add News</button>
+            </div>
+        </div>
+
+        <!-- Main Content Tabs -->
+        <div class="section">
+            <div class="tabs">
+                <div class="tab active" onclick="switchTab('standings')">🏆 Standings</div>
+                <div class="tab" onclick="switchTab('matches')">⚔️ Matches</div>
+                <div class="tab" onclick="switchTab('playoffs')">🏅 Playoffs</div>
+            </div>
+
+            <!-- Standings Tab -->
+            <div id="standings-tab" class="tab-content active">
+                <div class="round-info admin-section">
+                    <h3>Runden-Management</h3>
+                    <p>Aktuelle Runde: <strong id="currentRound">1</strong></p>
+                    <button onclick="generateNextRound()">Nächste Runde generieren</button>
+                    <button onclick="resetRounds()" class="danger">Runden zurücksetzen</button>
+                </div>
+                <table id="standingsTable">
+                    <thead>
+                        <tr>
+                            <th>Rang</th>
+                            <th>Spieler</th>
+                            <th>Gespielt</th>
+                            <th>Siege</th>
+                            <th>Remis</th>
+                            <th>Niederlagen</th>
+                            <th>Punkte</th>
+                            <th class="admin-section">Aktionen</th>
+                        </tr>
+                    </thead>
+                    <tbody id="standingsBody"></tbody>
+                </table>
+                <div class="admin-section" id="adminPlayerControls" style="margin-top: 20px;">
+                    <button onclick="showAddPlayerModal()">Spieler hinzufügen</button>
+                </div>
+            </div>
+
+            <!-- Matches Tab -->
+            <div id="matches-tab" class="tab-content">
+                <h3>Aktuelle Runden-Matches</h3>
+                <div id="currentRoundMatches"></div>
+                <h3 style="margin-top: 30px;">Alle Matches</h3>
+                <div id="matchesContainer"></div>
+                <div class="admin-section" id="adminMatchControls">
+                    <button onclick="showAddMatchModal()">Match-Ergebnis hinzufügen</button>
+                </div>
+            </div>
+
+            <!-- Playoffs Tab -->
+            <div id="playoffs-tab" class="tab-content">
+                <div class="round-info">
+                    <h3>Playoff-System</h3>
+                    <p>Die Top 4 Spieler aus der Tabelle qualifizieren sich für die Playoffs.</p>
+                    <p>Halbfinale: 1. vs 4. und 2. vs 3.</p>
+                    <p>Das Finale entscheidet den Champion!</p>
+                </div>
+                <div class="admin-section" style="margin-bottom: 20px;">
+                    <button onclick="startPlayoffs()">Playoffs starten</button>
+                    <button onclick="resetPlayoffs()" class="danger">Playoffs zurücksetzen</button>
+                </div>
+                <div id="playoffsContainer"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Login Modal -->
+    <div id="adminLoginModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('adminLoginModal')">&times;</span>
+            <h2>Admin Login</h2>
+            <div class="form-group">
+                <label>Passwort:</label>
+                <input type="password" id="adminPassword" placeholder="Admin-Passwort eingeben">
+            </div>
+            <button onclick="adminLogin()">Login</button>
+        </div>
+    </div>
+
+    <!-- Add Player Modal -->
+    <div id="addPlayerModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('addPlayerModal')">&times;</span>
+            <h2>Spieler hinzufügen</h2>
+            <div class="form-group">
+                <label>Spielername:</label>
+                <input type="text" id="newPlayerName" placeholder="Spielername eingeben">
+            </div>
+            <button onclick="addPlayer()">Spieler hinzufügen</button>
+        </div>
+    </div>
+
+    <!-- Edit Player Modal -->
+    <div id="editPlayerModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('editPlayerModal')">&times;</span>
+            <h2>Spieler bearbeiten</h2>
+            <input type="hidden" id="editPlayerId">
+            <div class="form-group">
+                <label>Spielername:</label>
+                <input type="text" id="editPlayerName">
+            </div>
+            <div class="form-group">
+                <label>Siege:</label>
+                <input type="number" id="editPlayerWins" min="0">
+            </div>
+            <div class="form-group">
+                <label>Remis:</label>
+                <input type="number" id="editPlayerDraws" min="0">
+            </div>
+            <div class="form-group">
+                <label>Niederlagen:</label>
+                <input type="number" id="editPlayerLosses" min="0">
+            </div>
+            <button onclick="savePlayerEdit()">Änderungen speichern</button>
+        </div>
+    </div>
+
+    <!-- Add Match Modal -->
+    <div id="addMatchModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('addMatchModal')">&times;</span>
+            <h2>Match-Ergebnis hinzufügen</h2>
+            <div class="form-group">
+                <label>Weiß:</label>
+                <select id="matchWhitePlayer"></select>
+            </div>
+            <div class="form-group">
+                <label>Schwarz:</label>
+                <select id="matchBlackPlayer"></select>
+            </div>
+            <div class="form-group">
+                <label>Ergebnis:</label>
+                <select id="matchResult">
+                    <option value="1-0">Weiß gewinnt (1-0)</option>
+                    <option value="0-1">Schwarz gewinnt (0-1)</option>
+                    <option value="0.5-0.5">Remis (½-½)</option>
+                </select>
+            </div>
+            <button onclick="addMatch()">Match hinzufügen</button>
+        </div>
+    </div>
+
+    <!-- Add News Modal -->
+    <div id="addNewsModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('addNewsModal')">&times;</span>
+            <h2>News hinzufügen</h2>
+            <div class="form-group">
+                <label>Titel:</label>
+                <input type="text" id="newsTitle" placeholder="News-Titel">
+            </div>
+            <div class="form-group">
+                <label>Inhalt:</label>
+                <textarea id="newsContent" rows="5" placeholder="News-Inhalt"></textarea>
+            </div>
+            <button onclick="addNews()">News hinzufügen</button>
+        </div>
+    </div>
+
+    <!-- Playoff Match Result Modal -->
+    <div id="playoffMatchModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('playoffMatchModal')">&times;</span>
+            <h2>Playoff-Ergebnis eingeben</h2>
+            <input type="hidden" id="playoffMatchId">
+            <div class="form-group">
+                <label>Gewinner:</label>
+                <select id="playoffWinner"></select>
+            </div>
+            <button onclick="savePlayoffResult()">Ergebnis speichern</button>
+        </div>
+    </div>
+
+    <script>
+        let data = {
+            players: [],
+            matches: [],
+            news: [],
+            currentRound: 1,
+            roundMatches: [],
+            playoffs: {
+                active: false,
+                semifinals: [],
+                final: null,
+                champion: null
+            }
+        };
+        let isAdmin = false;
+        let currentTab = 'standings';
+
+        // Load logo from uploaded file
+        window.addEventListener('DOMContentLoaded', function() {
+            const logoImg = document.getElementById('logoImg');
+            // Try to load the uploaded logo
+            fetch('/mnt/user-data/uploads/ChatGPT_Image_Jan_20__2026__03_08_56_PM.png')
+                .then(response => response.blob())
+                .then(blob => {
+                    const url = URL.createObjectURL(blob);
+                    logoImg.src = url;
+                })
+                .catch(err => {
+                    console.log('Logo could not be loaded, using placeholder');
+                });
+        });
+
+        // Initialize
+        function init() {
+            loadData();
+        }
+
+        // Load data from localStorage
+        function loadData() {
+            const storedData = localStorage.getItem('chessLeagueData');
+            if (storedData) {
+                data = JSON.parse(storedData);
+            } else {
+                // Initialize with sample data
+                data = {
+                    players: [
+                        { id: 1, name: "Magnus Carlsen", wins: 0, draws: 0, losses: 0 },
+                        { id: 2, name: "Hikaru Nakamura", wins: 0, draws: 0, losses: 0 },
+                        { id: 3, name: "Fabiano Caruana", wins: 0, draws: 0, losses: 0 },
+                        { id: 4, name: "Ding Liren", wins: 0, draws: 0, losses: 0 }
+                    ],
+                    matches: [],
+                    news: [
+                        { id: 1, title: "Liga-Saison eröffnet!", content: "Willkommen zur neuen Saison der ISN Chess League. Möge der beste Spieler gewinnen!", date: "2026-01-27" }
+                    ],
+                    currentRound: 1,
+                    roundMatches: [],
+                    playoffs: {
+                        active: false,
+                        semifinals: [],
+                        final: null,
+                        champion: null
+                    }
+                };
+                saveData();
+            }
+            render();
+        }
+
+        // Save data to localStorage
+        function saveData() {
+            localStorage.setItem('chessLeagueData', JSON.stringify(data));
+        }
+
+        // Render all sections
+        function render() {
+            renderStandings();
+            renderMatches();
+            renderNews();
+            renderPlayoffs();
+            updateAdminVisibility();
+            document.getElementById('currentRound').textContent = data.currentRound;
+        }
+
+        // Tab switching
+        function switchTab(tabName) {
+            currentTab = tabName;
+            
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected tab
+            document.getElementById(tabName + '-tab').classList.add('active');
+            
+            // Update tab buttons
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.target.classList.add('active');
+        }
+
+        // Calculate standings
+        function calculateStandings() {
+            return data.players.map(player => {
+                const played = player.wins + player.draws + player.losses;
+                const points = player.wins * 1 + player.draws * 0.5;
+                return { ...player, played, points };
+            }).sort((a, b) => {
+                if (b.points !== a.points) return b.points - a.points;
+                return b.wins - a.wins; // Tiebreaker: more wins
+            });
+        }
+
+        // Render standings table
+        function renderStandings() {
+            const standings = calculateStandings();
+            const tbody = document.getElementById('standingsBody');
+            tbody.innerHTML = '';
+
+            standings.forEach((player, index) => {
+                const row = document.createElement('tr');
+                row.className = `rank-${index + 1}`;
+                
+                let medal = '';
+                if (index === 0) medal = '♔';
+                else if (index === 1) medal = '♕';
+                else if (index === 2) medal = '♗';
+
+                row.innerHTML = `
+                    <td>${medal} ${index + 1}</td>
+                    <td>${player.name}</td>
+                    <td>${player.played}</td>
+                    <td>${player.wins}</td>
+                    <td>${player.draws}</td>
+                    <td>${player.losses}</td>
+                    <td><strong>${player.points}</strong></td>
+                    ${isAdmin ? `<td>
+                        <button class="secondary" onclick="editPlayer(${player.id})">Bearbeiten</button>
+                        <button class="danger" onclick="deletePlayer(${player.id})">Löschen</button>
+                    </td>` : ''}
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // Generate next round matches (Round-Robin)
+        function generateNextRound() {
+            if (!isAdmin) {
+                showNotification('Nur Admins können Runden generieren!', true);
+                return;
+            }
+
+            const players = [...data.players];
+            if (players.length < 2) {
+                showNotification('Mindestens 2 Spieler benötigt!', true);
+                return;
+            }
+
+            // Check if current round matches are all completed
+            const currentRoundMatchesData = data.roundMatches.filter(m => m.round === data.currentRound);
+            if (currentRoundMatchesData.length > 0 && currentRoundMatchesData.some(m => !m.completed)) {
+                showNotification('Bitte alle Matches der aktuellen Runde abschließen!', true);
+                return;
+            }
+
+            // Round-Robin algorithm
+            const numPlayers = players.length;
+            const isOdd = numPlayers % 2 === 1;
+            const totalPlayers = isOdd ? numPlayers + 1 : numPlayers;
+            
+            // Create pairings for this round
+            const roundNum = data.currentRound;
+            const pairings = [];
+            
+            // Use round-robin rotation algorithm
+            const playersArray = [...players];
+            if (isOdd) {
+                playersArray.push(null); // Bye player
+            }
+
+            // Rotate for the current round
+            for (let i = 0; i < roundNum - 1; i++) {
+                const last = playersArray.pop();
+                playersArray.splice(1, 0, last);
+            }
+
+            // Create matches for this round
+            const half = playersArray.length / 2;
+            for (let i = 0; i < half; i++) {
+                const player1 = playersArray[i];
+                const player2 = playersArray[playersArray.length - 1 - i];
+                
+                if (player1 && player2) {
+                    // Alternate colors
+                    const whitePlayer = roundNum % 2 === 1 ? player1.name : player2.name;
+                    const blackPlayer = roundNum % 2 === 1 ? player2.name : player1.name;
+                    
+                    pairings.push({
+                        id: Date.now() + i,
+                        round: roundNum,
+                        whitePlayer: whitePlayer,
+                        blackPlayer: blackPlayer,
+                        completed: false,
+                        result: null,
+                        date: new Date().toISOString().split('T')[0]
+                    });
+                }
+            }
+
+            data.roundMatches = data.roundMatches.concat(pairings);
+            data.currentRound++;
+            saveData();
+            render();
+            showNotification(`Runde ${roundNum} Matches generiert!`);
+        }
+
+        // Reset rounds
+        function resetRounds() {
+            if (!isAdmin) return;
+            if (!confirm('Alle Runden zurücksetzen? Dies löscht alle Match-Daten!')) return;
+            
+            data.currentRound = 1;
+            data.roundMatches = [];
+            data.matches = [];
+            data.players.forEach(p => {
+                p.wins = 0;
+                p.draws = 0;
+                p.losses = 0;
+            });
+            saveData();
+            render();
+            showNotification('Runden zurückgesetzt!');
+        }
+
+        // Render matches
+        function renderMatches() {
+            // Render current round matches
+            const currentRoundContainer = document.getElementById('currentRoundMatches');
+            currentRoundContainer.innerHTML = '';
+            
+            const currentRoundMatchesData = data.roundMatches.filter(m => m.round === data.currentRound - 1);
+            
+            if (currentRoundMatchesData.length > 0) {
+                currentRoundMatchesData.forEach(match => {
+                    const div = document.createElement('div');
+                    div.className = 'match-result';
+                    
+                    const whiteWins = match.result === '1-0';
+                    const blackWins = match.result === '0-1';
+
+                    div.innerHTML = `
+                        <div class="player ${whiteWins ? 'winner' : ''}">
+                            <span class="chess-piece">♔</span>${match.whitePlayer}
+                        </div>
+                        <div class="score">${match.completed ? match.result : 'TBD'}</div>
+                        <div class="player ${blackWins ? 'winner' : ''}">
+                            ${match.blackPlayer}<span class="chess-piece">♚</span>
+                        </div>
+                        ${isAdmin && !match.completed ? `<button onclick="completeRoundMatch(${match.id})">Ergebnis eingeben</button>` : ''}
+                    `;
+                    currentRoundContainer.appendChild(div);
+                });
+            } else {
+                currentRoundContainer.innerHTML = '<p style="color: #cccccc; font-style: italic;">Keine Runden-Matches für diese Runde.</p>';
+            }
+
+            // Render all matches
+            const container = document.getElementById('matchesContainer');
+            container.innerHTML = '';
+
+            const allMatches = [...data.matches, ...data.roundMatches.filter(m => m.completed)];
+            const sortedMatches = allMatches.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+            sortedMatches.slice(0, 20).forEach(match => {
+                const div = document.createElement('div');
+                div.className = 'match-result';
+                
+                const whiteWins = match.result === '1-0';
+                const blackWins = match.result === '0-1';
+
+                div.innerHTML = `
+                    <div class="player ${whiteWins ? 'winner' : ''}">
+                        <span class="chess-piece">♔</span>${match.whitePlayer}
+                    </div>
+                    <div class="score">${match.result}</div>
+                    <div class="player ${blackWins ? 'winner' : ''}">
+                        ${match.blackPlayer}<span class="chess-piece">♚</span>
+                    </div>
+                    ${match.round ? `<small style="color: #cccccc;">Runde ${match.round}</small>` : ''}
+                    ${isAdmin ? `<button class="danger" onclick="deleteMatch(${match.id})">Löschen</button>` : ''}
+                `;
+                container.appendChild(div);
+            });
+
+            if (sortedMatches.length === 0) {
+                container.innerHTML = '<p style="color: #cccccc; font-style: italic;">Noch keine Matches gespielt.</p>';
+            }
+        }
+
+        // Complete a round match
+        function completeRoundMatch(matchId) {
+            const match = data.roundMatches.find(m => m.id === matchId);
+            if (!match) return;
+
+            const result = prompt(`Ergebnis für ${match.whitePlayer} (Weiß) vs ${match.blackPlayer} (Schwarz):\n1-0 für Weiß gewinnt\n0-1 für Schwarz gewinnt\n0.5-0.5 für Remis`);
+            
+            if (!result || !['1-0', '0-1', '0.5-0.5'].includes(result)) {
+                showNotification('Ungültiges Ergebnis!', true);
+                return;
+            }
+
+            match.result = result;
+            match.completed = true;
+
+            // Update player statistics
+            const white = data.players.find(p => p.name === match.whitePlayer);
+            const black = data.players.find(p => p.name === match.blackPlayer);
+
+            if (result === '1-0') {
+                white.wins++;
+                black.losses++;
+            } else if (result === '0-1') {
+                black.wins++;
+                white.losses++;
+            } else {
+                white.draws++;
+                black.draws++;
+            }
+
+            saveData();
+            render();
+            showNotification('Match abgeschlossen!');
+        }
+
+        // Render news
+        function renderNews() {
+            const container = document.getElementById('newsContainer');
+            container.innerHTML = '';
+
+            const sortedNews = [...data.news].sort((a, b) => new Date(b.date) - new Date(a.date));
+
+            sortedNews.forEach(newsItem => {
+                const div = document.createElement('div');
+                div.className = 'news-item';
+                div.innerHTML = `
+                    <h3>${newsItem.title}</h3>
+                    <div class="news-date">${new Date(newsItem.date).toLocaleDateString('de-DE')}</div>
+                    <p>${newsItem.content}</p>
+                    ${isAdmin ? `<button class="danger" onclick="deleteNews(${newsItem.id})" style="margin-top: 10px;">Löschen</button>` : ''}
+                `;
+                container.appendChild(div);
+            });
+
+            if (sortedNews.length === 0) {
+                container.innerHTML = '<p style="color: #cccccc; font-style: italic;">Keine News verfügbar.</p>';
+            }
+        }
+
+        // Playoff functions
+        function startPlayoffs() {
+            if (!isAdmin) {
+                showNotification('Nur Admins können Playoffs starten!', true);
+                return;
+            }
+
+            const standings = calculateStandings();
+            if (standings.length < 4) {
+                showNotification('Mindestens 4 Spieler für Playoffs benötigt!', true);
+                return;
+            }
+
+            const top4 = standings.slice(0, 4);
+            
+            data.playoffs = {
+                active: true,
+                semifinals: [
+                    {
+                        id: 1,
+                        name: 'Halbfinale 1',
+                        player1: top4[0].name,
+                        player2: top4[3].name,
+                        winner: null,
+                        completed: false
+                    },
+                    {
+                        id: 2,
+                        name: 'Halbfinale 2',
+                        player1: top4[1].name,
+                        player2: top4[2].name,
+                        winner: null,
+                        completed: false
+                    }
+                ],
+                final: null,
+                champion: null
+            };
+
+            saveData();
+            render();
+            showNotification('Playoffs gestartet!');
+        }
+
+        function resetPlayoffs() {
+            if (!isAdmin) return;
+            if (!confirm('Playoffs zurücksetzen?')) return;
+
+            data.playoffs = {
+                active: false,
+                semifinals: [],
+                final: null,
+                champion: null
+            };
+
+            saveData();
+            render();
+            showNotification('Playoffs zurückgesetzt!');
+        }
+
+        function renderPlayoffs() {
+            const container = document.getElementById('playoffsContainer');
+            container.innerHTML = '';
+
+            if (!data.playoffs.active) {
+                container.innerHTML = '<p style="color: #cccccc; font-style: italic;">Playoffs noch nicht gestartet. Admin kann Playoffs starten, wenn mindestens 4 Spieler verfügbar sind.</p>';
+                return;
+            }
+
+            // Render semifinals
+            const semifinalsDiv = document.createElement('div');
+            semifinalsDiv.innerHTML = '<h3 style="color: #dc143c; margin-bottom: 15px;">Halbfinale</h3>';
+            
+            data.playoffs.semifinals.forEach(match => {
+                const matchDiv = document.createElement('div');
+                matchDiv.className = 'playoff-match';
+                matchDiv.innerHTML = `
+                    <h4>${match.name}</h4>
+                    <div class="playoff-player ${match.winner === match.player1 ? 'playoff-winner' : ''}">
+                        <span>${match.player1}</span>
+                        ${match.winner === match.player1 ? '<span>✓ Gewinner</span>' : ''}
+                    </div>
+                    <div class="playoff-player ${match.winner === match.player2 ? 'playoff-winner' : ''}">
+                        <span>${match.player2}</span>
+                        ${match.winner === match.player2 ? '<span>✓ Gewinner</span>' : ''}
+                    </div>
+                    ${isAdmin && !match.completed ? `<button onclick="enterPlayoffResult(${match.id}, 'semifinal')">Ergebnis eingeben</button>` : ''}
+                `;
+                semifinalsDiv.appendChild(matchDiv);
+            });
+            container.appendChild(semifinalsDiv);
+
+            // Check if both semifinals are completed
+            const semifinalsCompleted = data.playoffs.semifinals.every(m => m.completed);
+            
+            if (semifinalsCompleted && !data.playoffs.final) {
+                // Create final
+                data.playoffs.final = {
+                    id: 3,
+                    name: 'Finale',
+                    player1: data.playoffs.semifinals[0].winner,
+                    player2: data.playoffs.semifinals[1].winner,
+                    winner: null,
+                    completed: false
+                };
+                saveData();
+            }
+
+            // Render final
+            if (data.playoffs.final) {
+                const finalDiv = document.createElement('div');
+                finalDiv.innerHTML = '<h3 style="color: #dc143c; margin: 30px 0 15px;">Finale</h3>';
+                
+                const match = data.playoffs.final;
+                const matchDiv = document.createElement('div');
+                matchDiv.className = 'playoff-match';
+                matchDiv.innerHTML = `
+                    <h4>${match.name}</h4>
+                    <div class="playoff-player ${match.winner === match.player1 ? 'playoff-winner' : ''}">
+                        <span>${match.player1}</span>
+                        ${match.winner === match.player1 ? '<span>🏆 Champion!</span>' : ''}
+                    </div>
+                    <div class="playoff-player ${match.winner === match.player2 ? 'playoff-winner' : ''}">
+                        <span>${match.player2}</span>
+                        ${match.winner === match.player2 ? '<span>🏆 Champion!</span>' : ''}
+                    </div>
+                    ${isAdmin && !match.completed ? `<button onclick="enterPlayoffResult(${match.id}, 'final')">Ergebnis eingeben</button>` : ''}
+                `;
+                finalDiv.appendChild(matchDiv);
+                container.appendChild(finalDiv);
+            }
+
+            // Show champion
+            if (data.playoffs.champion) {
+                const championDiv = document.createElement('div');
+                championDiv.style.cssText = 'background: rgba(220, 20, 60, 0.2); padding: 20px; border-radius: 10px; text-align: center; margin-top: 30px; border: 2px solid #dc143c;';
+                championDiv.innerHTML = `
+                    <h2 style="color: #FFD700; font-size: 2em;">🏆 Champion 🏆</h2>
+                    <h3 style="color: #ffffff; font-size: 1.8em; margin-top: 10px;">${data.playoffs.champion}</h3>
+                `;
+                container.appendChild(championDiv);
+            }
+        }
+
+        function enterPlayoffResult(matchId, type) {
+            let match;
+            if (type === 'semifinal') {
+                match = data.playoffs.semifinals.find(m => m.id === matchId);
+            } else {
+                match = data.playoffs.final;
+            }
+
+            if (!match) return;
+
+            const winner = prompt(`Gewinner von ${match.player1} vs ${match.player2}:\n1 für ${match.player1}\n2 für ${match.player2}`);
+            
+            if (winner !== '1' && winner !== '2') {
+                showNotification('Ungültige Eingabe!', true);
+                return;
+            }
+
+            match.winner = winner === '1' ? match.player1 : match.player2;
+            match.completed = true;
+
+            if (type === 'final') {
+                data.playoffs.champion = match.winner;
+            }
+
+            saveData();
+            render();
+            showNotification('Playoff-Ergebnis gespeichert!');
+        }
+
+        // Admin login
+        function showAdminLogin() {
+            document.getElementById('adminLoginModal').style.display = 'block';
+        }
+
+        function adminLogin() {
+            const password = document.getElementById('adminPassword').value;
+            if (password === '5082') {
+                isAdmin = true;
+                showNotification('Admin-Zugriff gewährt!');
+                closeModal('adminLoginModal');
+                updateAdminVisibility();
+                render();
+            } else {
+                showNotification('Falsches Passwort!', true);
+            }
+            document.getElementById('adminPassword').value = '';
+        }
+
+        function logout() {
+            isAdmin = false;
+            showNotification('Erfolgreich abgemeldet');
+            updateAdminVisibility();
+            render();
+        }
+
+        function updateAdminVisibility() {
+            const adminSections = document.querySelectorAll('.admin-section');
+            const logoutBtn = document.getElementById('logoutBtn');
+            
+            adminSections.forEach(section => {
+                section.style.display = isAdmin ? 'block' : 'none';
+            });
+            
+            logoutBtn.style.display = isAdmin ? 'inline-block' : 'none';
+        }
+
+        // Player management
+        function showAddPlayerModal() {
+            document.getElementById('addPlayerModal').style.display = 'block';
+        }
+
+        function addPlayer() {
+            const name = document.getElementById('newPlayerName').value.trim();
+            if (!name) {
+                showNotification('Bitte Spielernamen eingeben!', true);
+                return;
+            }
+
+            const newId = data.players.length > 0 ? Math.max(...data.players.map(p => p.id)) + 1 : 1;
+            data.players.push({
+                id: newId,
+                name: name,
+                wins: 0,
+                draws: 0,
+                losses: 0
+            });
+
+            saveData();
+            render();
+            closeModal('addPlayerModal');
+            document.getElementById('newPlayerName').value = '';
+            showNotification('Spieler hinzugefügt!');
+        }
+
+        function editPlayer(id) {
+            const player = data.players.find(p => p.id === id);
+            if (!player) return;
+
+            document.getElementById('editPlayerId').value = player.id;
+            document.getElementById('editPlayerName').value = player.name;
+            document.getElementById('editPlayerWins').value = player.wins;
+            document.getElementById('editPlayerDraws').value = player.draws;
+            document.getElementById('editPlayerLosses').value = player.losses;
+            document.getElementById('editPlayerModal').style.display = 'block';
+        }
+
+        function savePlayerEdit() {
+            const id = parseInt(document.getElementById('editPlayerId').value);
+            const player = data.players.find(p => p.id === id);
+            if (!player) return;
+
+            player.name = document.getElementById('editPlayerName').value.trim();
+            player.wins = parseInt(document.getElementById('editPlayerWins').value) || 0;
+            player.draws = parseInt(document.getElementById('editPlayerDraws').value) || 0;
+            player.losses = parseInt(document.getElementById('editPlayerLosses').value) || 0;
+
+            saveData();
+            render();
+            closeModal('editPlayerModal');
+            showNotification('Spieler aktualisiert!');
+        }
+
+        function deletePlayer(id) {
+            if (!confirm('Spieler wirklich löschen?')) return;
+            
+            data.players = data.players.filter(p => p.id !== id);
+            saveData();
+            render();
+            showNotification('Spieler gelöscht!');
+        }
+
+        // Match management
+        function showAddMatchModal() {
+            const whiteSelect = document.getElementById('matchWhitePlayer');
+            const blackSelect = document.getElementById('matchBlackPlayer');
+            
+            whiteSelect.innerHTML = '';
+            blackSelect.innerHTML = '';
+            
+            data.players.forEach(player => {
+                whiteSelect.innerHTML += `<option value="${player.name}">${player.name}</option>`;
+                blackSelect.innerHTML += `<option value="${player.name}">${player.name}</option>`;
+            });
+            
+            document.getElementById('addMatchModal').style.display = 'block';
+        }
+
+        function addMatch() {
+            const whitePlayer = document.getElementById('matchWhitePlayer').value;
+            const blackPlayer = document.getElementById('matchBlackPlayer').value;
+            const result = document.getElementById('matchResult').value;
+
+            if (whitePlayer === blackPlayer) {
+                showNotification('Spieler müssen unterschiedlich sein!', true);
+                return;
+            }
+
+            const newId = data.matches.length > 0 ? Math.max(...data.matches.map(m => m.id)) + 1 : 1;
+            data.matches.push({
+                id: newId,
+                whitePlayer: whitePlayer,
+                blackPlayer: blackPlayer,
+                result: result,
+                date: new Date().toISOString().split('T')[0]
+            });
+
+            // Update player statistics
+            const white = data.players.find(p => p.name === whitePlayer);
+            const black = data.players.find(p => p.name === blackPlayer);
+
+            if (result === '1-0') {
+                white.wins++;
+                black.losses++;
+            } else if (result === '0-1') {
+                black.wins++;
+                white.losses++;
+            } else {
+                white.draws++;
+                black.draws++;
+            }
+
+            saveData();
+            render();
+            closeModal('addMatchModal');
+            showNotification('Match hinzugefügt!');
+        }
+
+        function deleteMatch(id) {
+            if (!confirm('Match wirklich löschen?')) return;
+            
+            data.matches = data.matches.filter(m => m.id !== id);
+            saveData();
+            render();
+            showNotification('Match gelöscht!');
+        }
+
+        // News management
+        function showAddNewsModal() {
+            document.getElementById('addNewsModal').style.display = 'block';
+        }
+
+        function addNews() {
+            const title = document.getElementById('newsTitle').value.trim();
+            const content = document.getElementById('newsContent').value.trim();
+
+            if (!title || !content) {
+                showNotification('Bitte alle Felder ausfüllen!', true);
+                return;
+            }
+
+            const newId = data.news.length > 0 ? Math.max(...data.news.map(n => n.id)) + 1 : 1;
+            data.news.push({
+                id: newId,
+                title: title,
+                content: content,
+                date: new Date().toISOString().split('T')[0]
+            });
+
+            saveData();
+            render();
+            closeModal('addNewsModal');
+            document.getElementById('newsTitle').value = '';
+            document.getElementById('newsContent').value = '';
+            showNotification('News hinzugefügt!');
+        }
+
+        function deleteNews(id) {
+            if (!confirm('News wirklich löschen?')) return;
+            
+            data.news = data.news.filter(n => n.id !== id);
+            saveData();
+            render();
+            showNotification('News gelöscht!');
+        }
+
+        // Modal management
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
+            }
+        }
+
+        // Notification
+        function showNotification(message, isError = false) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.style.background = isError ? '#8b0000' : '#32cd32';
+            notification.style.display = 'block';
+            
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 3000);
+        }
+
+        // Initialize on page load
+        window.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
