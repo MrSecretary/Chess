@@ -1,0 +1,69 @@
+{
+  "players": [
+    {
+      "id": 1,
+      "name": "Magnus Carlsen",
+      "wins": 5,
+      "draws": 2,
+      "losses": 1
+    },
+    {
+      "id": 2,
+      "name": "Hikaru Nakamura",
+      "wins": 4,
+      "draws": 3,
+      "losses": 1
+    },
+    {
+      "id": 3,
+      "name": "Fabiano Caruana",
+      "wins": 4,
+      "draws": 2,
+      "losses": 2
+    },
+    {
+      "id": 4,
+      "name": "Ding Liren",
+      "wins": 3,
+      "draws": 3,
+      "losses": 2
+    }
+  ],
+  "matches": [
+    {
+      "id": 1,
+      "whitePlayer": "Magnus Carlsen",
+      "blackPlayer": "Hikaru Nakamura",
+      "result": "1-0",
+      "date": "2025-01-20"
+    },
+    {
+      "id": 2,
+      "whitePlayer": "Fabiano Caruana",
+      "blackPlayer": "Ding Liren",
+      "result": "0.5-0.5",
+      "date": "2025-01-21"
+    },
+    {
+      "id": 3,
+      "whitePlayer": "Hikaru Nakamura",
+      "blackPlayer": "Magnus Carlsen",
+      "result": "0-1",
+      "date": "2025-01-22"
+    }
+  ],
+  "news": [
+    {
+      "id": 1,
+      "title": "League Season Opens!",
+      "content": "Welcome to the new season of ISN Chess League. May the best player win!",
+      "date": "2025-01-15"
+    },
+    {
+      "id": 2,
+      "title": "Tournament Rules Updated",
+      "content": "Please review the updated tournament rules on our website.",
+      "date": "2025-01-18"
+    }
+  ]
+}
