@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ISN Chess League</title>
+    <title>International School Neustadt - Chess League</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -11,74 +12,174 @@
             box-sizing: border-box;
         }
 
+        :root {
+            --primary-red: #e31e24;
+            --dark-red: #a01419;
+            --black: #0a0a0a;
+            --white: #ffffff;
+            --gray: #1a1a1a;
+            --light-gray: #2a2a2a;
+        }
+
         body {
-            font-family: 'Georgia', serif;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-            color: #e8e8e8;
+            font-family: 'Rajdhani', sans-serif;
+            background: var(--black);
+            color: var(--white);
             min-height: 100vh;
-            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAABZJREFUeNpi2r9//38gYGAEESAAEGAAasgJOgzOKCoAAAAASUVORK5CYII=') repeat;
+            opacity: 0.03;
+            pointer-events: none;
+            z-index: 1;
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 2;
         }
 
-        header {
+        .header {
             text-align: center;
-            padding: 30px 0;
-            background: linear-gradient(135deg, #0f3460 0%, #16213e 100%);
-            border-radius: 15px;
+            padding: 40px 20px;
+            position: relative;
+        }
+
+        .logo-container {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+
+        .logo {
+            max-width: 280px;
+            height: auto;
+            filter: drop-shadow(0 10px 30px rgba(227, 30, 36, 0.4));
+            animation: logoFloat 6s ease-in-out infinite;
+        }
+
+        @keyframes logoFloat {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 3.5rem;
+            letter-spacing: 4px;
+            margin: 20px 0;
+            background: linear-gradient(135deg, var(--white) 0%, var(--primary-red) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: titleGlow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes titleGlow {
+            from { filter: drop-shadow(0 0 10px rgba(227, 30, 36, 0.3)); }
+            to { filter: drop-shadow(0 0 20px rgba(227, 30, 36, 0.6)); }
+        }
+
+        .admin-section {
+            background: var(--gray);
+            border: 2px solid var(--primary-red);
+            border-radius: 12px;
+            padding: 30px;
             margin-bottom: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            border: 2px solid #d4af37;
-        }
-
-        h1 {
-            font-size: 2.5em;
-            color: #d4af37;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-            margin-bottom: 10px;
-        }
-
-        h1::before {
-            content: "♔ ";
-        }
-
-        h1::after {
-            content: " ♚";
-        }
-
-        .contact {
-            color: #b8b8b8;
-            font-size: 0.9em;
-            margin-top: 10px;
-        }
-
-        .contact a {
-            color: #d4af37;
-            text-decoration: none;
-        }
-
-        .contact a:hover {
-            text-decoration: underline;
+            box-shadow: 0 8px 32px rgba(227, 30, 36, 0.2);
         }
 
         .section {
-            background: rgba(15, 52, 96, 0.6);
-            border-radius: 10px;
+            background: var(--gray);
+            border-left: 4px solid var(--primary-red);
+            border-radius: 8px;
             padding: 25px;
-            margin-bottom: 25px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-            border: 1px solid #0f3460;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s ease;
         }
 
-        h2 {
-            color: #d4af37;
+        .section:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 30px rgba(227, 30, 36, 0.3);
+        }
+
+        .section-title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 2rem;
+            color: var(--primary-red);
             margin-bottom: 20px;
+            letter-spacing: 2px;
+            border-bottom: 2px solid var(--light-gray);
             padding-bottom: 10px;
-            border-bottom: 2px solid #d4af37;
-            font-size: 1.8em;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, var(--primary-red) 0%, var(--dark-red) 100%);
+            color: var(--white);
+            border: none;
+            padding: 12px 28px;
+            font-size: 1rem;
+            font-weight: 600;
+            font-family: 'Rajdhani', sans-serif;
+            letter-spacing: 1px;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            box-shadow: 0 4px 15px rgba(227, 30, 36, 0.3);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(227, 30, 36, 0.5);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background: var(--light-gray);
+            border: 1px solid var(--primary-red);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #c41e3a 0%, #8b1429 100%);
+        }
+
+        input[type="text"],
+        input[type="password"],
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            background: var(--light-gray);
+            border: 1px solid var(--primary-red);
+            border-radius: 6px;
+            color: var(--white);
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1rem;
+        }
+
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--white);
+            box-shadow: 0 0 10px rgba(227, 30, 36, 0.4);
         }
 
         table {
@@ -88,994 +189,567 @@
         }
 
         th {
-            background: #0f3460;
-            color: #d4af37;
-            padding: 12px;
+            background: linear-gradient(135deg, var(--primary-red) 0%, var(--dark-red) 100%);
+            color: var(--white);
+            padding: 15px;
             text-align: left;
-            font-weight: bold;
-            border: 1px solid #16213e;
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.2rem;
+            letter-spacing: 2px;
         }
 
         td {
-            padding: 10px 12px;
-            border: 1px solid #16213e;
-            background: rgba(26, 26, 46, 0.5);
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--light-gray);
         }
 
-        tr:hover td {
-            background: rgba(212, 175, 55, 0.1);
+        tr:hover {
+            background: var(--light-gray);
         }
 
-        .rank-1 td:first-child {
-            color: #FFD700;
-            font-weight: bold;
-        }
-
-        .rank-2 td:first-child {
-            color: #C0C0C0;
-            font-weight: bold;
-        }
-
-        .rank-3 td:first-child {
-            color: #CD7F32;
-            font-weight: bold;
-        }
-
-        button {
-            background: #d4af37;
-            color: #1a1a2e;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 1em;
-            transition: all 0.3s;
-            margin: 5px;
-        }
-
-        button:hover {
-            background: #f0c860;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(212, 175, 55, 0.4);
-        }
-
-        button.secondary {
-            background: #533483;
-            color: white;
-        }
-
-        button.secondary:hover {
-            background: #6b4b9a;
-        }
-
-        button.danger {
-            background: #e63946;
-            color: white;
-        }
-
-        button.danger:hover {
-            background: #f15b67;
-        }
-
-        input, select, textarea {
-            padding: 8px 12px;
-            border-radius: 5px;
-            border: 1px solid #0f3460;
-            background: rgba(26, 26, 46, 0.8);
-            color: #e8e8e8;
-            font-size: 1em;
-            margin: 5px;
-        }
-
-        input:focus, select:focus, textarea:focus {
-            outline: none;
-            border-color: #d4af37;
-            box-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
-        }
-
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.8);
-            z-index: 1000;
-            overflow-y: auto;
-        }
-
-        .modal-content {
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-            margin: 50px auto;
-            padding: 30px;
-            width: 90%;
-            max-width: 600px;
-            border-radius: 15px;
-            box-shadow: 0 15px 50px rgba(0,0,0,0.7);
-            border: 2px solid #d4af37;
-        }
-
-        .close {
-            color: #d4af37;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-            cursor: pointer;
-            line-height: 20px;
-        }
-
-        .close:hover {
-            color: #f0c860;
-        }
-
-        .form-group {
-            margin-bottom: 15px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            color: #d4af37;
-            font-weight: bold;
-        }
-
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
-            width: 100%;
-            margin: 0;
-        }
-
-        .admin-section {
-            display: none;
-        }
-
-        .news-item {
-            background: rgba(26, 26, 46, 0.5);
+        .match {
+            background: var(--light-gray);
             padding: 15px;
-            margin-bottom: 15px;
-            border-radius: 8px;
-            border-left: 4px solid #d4af37;
-        }
-
-        .news-item h3 {
-            color: #d4af37;
-            margin-bottom: 8px;
-        }
-
-        .news-date {
-            color: #b8b8b8;
-            font-size: 0.85em;
-            font-style: italic;
-            margin-bottom: 10px;
-        }
-
-        .match-result {
+            margin: 10px 0;
+            border-radius: 6px;
+            border-left: 3px solid var(--primary-red);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 10px;
-            margin: 10px 0;
-            background: rgba(26, 26, 46, 0.5);
-            border-radius: 5px;
-            border-left: 3px solid #d4af37;
+            transition: all 0.3s ease;
         }
 
-        .match-result .player {
-            flex: 1;
-            text-align: center;
+        .match:hover {
+            background: rgba(227, 30, 36, 0.1);
+            transform: translateX(5px);
         }
 
-        .match-result .score {
-            font-size: 1.3em;
-            font-weight: bold;
-            color: #d4af37;
-            padding: 0 20px;
+        .match-players {
+            font-size: 1.1rem;
+            font-weight: 500;
         }
 
-        .winner {
-            color: #4ecca3;
-            font-weight: bold;
+        .match-vs {
+            color: var(--primary-red);
+            font-weight: 700;
+            margin: 0 15px;
         }
 
-        .admin-controls {
-            text-align: center;
-            margin-bottom: 20px;
+        .result-select {
+            width: auto;
+            min-width: 120px;
         }
 
-        .chess-piece {
-            font-size: 1.2em;
-            margin-right: 5px;
-        }
-
-        .notification {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 15px 25px;
-            background: #4ecca3;
-            color: #1a1a2e;
-            border-radius: 8px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-            z-index: 2000;
+        .hidden {
             display: none;
-            font-weight: bold;
+        }
+
+        .login-form {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .player-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .player-item {
+            background: var(--light-gray);
+            padding: 15px;
+            border-radius: 6px;
+            border: 1px solid var(--primary-red);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .player-item:hover {
+            background: rgba(227, 30, 36, 0.1);
+            transform: scale(1.02);
+        }
+
+        .playoff-bracket {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 20px;
+        }
+
+        .playoff-match {
+            background: linear-gradient(135deg, var(--light-gray) 0%, var(--gray) 100%);
+            padding: 20px;
+            border-radius: 8px;
+            border: 2px solid var(--primary-red);
+            text-align: center;
+        }
+
+        .playoff-match.final {
+            grid-column: 1 / -1;
+            max-width: 600px;
+            margin: 0 auto;
+            background: linear-gradient(135deg, var(--dark-red) 0%, var(--primary-red) 100%);
+        }
+
+        .trophy {
+            font-size: 3rem;
+            margin: 10px 0;
+        }
+
+        .contact {
+            text-align: center;
+            padding: 30px;
+            margin-top: 40px;
+            border-top: 2px solid var(--primary-red);
+        }
+
+        .contact a {
+            color: var(--primary-red);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .contact a:hover {
+            color: var(--white);
+        }
+
+        @media (max-width: 768px) {
+            .title {
+                font-size: 2rem;
+            }
+
+            .playoff-bracket {
+                grid-template-columns: 1fr;
+            }
+
+            .logo {
+                max-width: 200px;
+            }
+
+            th, td {
+                padding: 8px;
+                font-size: 0.9rem;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="notification" id="notification"></div>
-    
     <div class="container">
-        <header>
-            <h1>ISN Chess League</h1>
-            <p class="contact">Contact: <a href="/cdn-cgi/l/email-protection#fa9cd49c889f979889ba9389d7949f8f898e9b9e8ed49e9f"><span class="__cf_email__" data-cfemail="d7b1f9b1a5b2bab5a497bea4fab9b2a2a4a3b6b3a3f9b3b2">[email&#160;protected]</span></a></p>
-        </header>
-
-        <div class="admin-controls">
-            <button onclick="showAdminLogin()">Admin Login</button>
-            <button onclick="logout()" class="danger" style="display:none;" id="logoutBtn">Abmelden</button>
+        <div class="header">
+            <div class="logo-container">
+                <img src="/mnt/user-data/uploads/Logo_2.png" alt="Chess League Logo" class="logo" id="logo">
+            </div>
+            <h1 class="title">Schachliga Verwaltung</h1>
         </div>
 
-        <!-- News Section -->
-        <div class="section">
-            <h2>📰 League News</h2>
-            <div id="newsContainer"></div>
-            <div class="admin-section" id="adminNewsControls">
-                <button onclick="showAddNewsModal()">News hinzufügen</button>
+        <!-- Admin Login -->
+        <div id="loginSection" class="admin-section">
+            <h2 class="section-title">Admin Login</h2>
+            <div class="login-form">
+                <input type="password" id="passwordInput" placeholder="Admin-Passwort eingeben">
+                <button class="btn" onclick="login()">Anmelden</button>
             </div>
         </div>
 
-        <!-- Standings Section -->
+        <!-- Admin Panel -->
+        <div id="adminPanel" class="hidden">
+            <div class="section">
+                <h2 class="section-title">Spielerverwaltung</h2>
+                <input type="text" id="newPlayerName" placeholder="Spielername">
+                <button class="btn" onclick="addPlayer()">Spieler hinzufügen</button>
+                
+                <div class="player-list" id="playerList"></div>
+            </div>
+
+            <div class="section">
+                <h2 class="section-title">Spieltag erstellen</h2>
+                <input type="number" id="roundNumber" placeholder="Spieltag Nummer" min="1">
+                <button class="btn" onclick="generateMatches()">Paarungen generieren</button>
+            </div>
+        </div>
+
+        <!-- Standings -->
         <div class="section">
-            <h2>🏆 League Standings</h2>
-            <table id="standingsTable">
+            <h2 class="section-title">Tabelle</h2>
+            <table>
                 <thead>
                     <tr>
-                        <th>Rank</th>
-                        <th>Player</th>
-                        <th>Played</th>
+                        <th>Rang</th>
+                        <th>Spieler</th>
+                        <th>Spiele</th>
                         <th>Siege</th>
-                        <th>Remis</th>
+                        <th>Unentschieden</th>
                         <th>Niederlagen</th>
                         <th>Punkte</th>
-                        <th class="admin-section">Aktionen</th>
                     </tr>
                 </thead>
-                <tbody id="standingsBody"></tbody>
+                <tbody id="standingsTable"></tbody>
             </table>
-            <div class="admin-section" id="adminPlayerControls" style="margin-top: 20px;">
-                <button onclick="showAddPlayerModal()">Spieler hinzufügen</button>
-            </div>
         </div>
 
-        <!-- Match Results Section -->
+        <!-- Matches -->
         <div class="section">
-            <h2>⚔️ Recent Matches</h2>
-            <div id="matchesContainer"></div>
-            <div class="admin-section" id="adminMatchControls">
-                <button onclick="showAddMatchModal()">Add Match Result</button>
+            <h2 class="section-title">Spielpaarungen</h2>
+            <div id="matchesList"></div>
+        </div>
+
+        <!-- Playoffs -->
+        <div class="section">
+            <h2 class="section-title">Playoffs</h2>
+            <button class="btn" onclick="startPlayoffs()" id="startPlayoffsBtn">Playoffs starten</button>
+            <div id="playoffsBracket" class="hidden">
+                <h3 style="text-align: center; margin: 20px 0; font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem; color: var(--primary-red);">Halbfinale</h3>
+                <div class="playoff-bracket">
+                    <div class="playoff-match" id="playoff1"></div>
+                    <div class="playoff-match" id="playoff2"></div>
+                </div>
+                <h3 style="text-align: center; margin: 30px 0 20px; font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem; color: var(--primary-red);">Finale</h3>
+                <div class="playoff-match final" id="finalMatch">
+                    <div class="trophy">🏆</div>
+                    <div id="finalContent">Warte auf Halbfinal-Ergebnisse...</div>
+                </div>
             </div>
+        </div>
+
+        <div class="contact">
+            <p>Kontakt: <a href="mailto:f.frembs@is-neustadt.de">f.frembs@is-neustadt.de</a></p>
         </div>
     </div>
 
-    <!-- Admin Login Modal -->
-    <div id="adminLoginModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal('adminLoginModal')">&times;</span>
-            <h2>Admin Login</h2>
-            <div class="form-group">
-                <label>Password:</label>
-                <input type="password" id="adminPassword" placeholder="Enter admin password">
-            </div>
-            <button onclick="adminLogin()">Einloggen</button>
-        </div>
-    </div>
+    <script>
+        // Admin password (in production, this should be handled server-side)
+        const ADMIN_PASSWORD = 'chess2024';
 
-    <!-- Add Player Modal -->
-    <div id="addPlayerModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal('addPlayerModal')">&times;</span>
-            <h2>Spieler hinzufügen</h2>
-            <div class="form-group">
-                <label>Player Name:</label>
-                <input type="text" id="newPlayerName" placeholder="Enter player name">
-            </div>
-            <button onclick="addPlayer()">Spieler hinzufügen</button>
-        </div>
-    </div>
-
-    <!-- Edit Player Modal -->
-    <div id="editPlayerModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal('editPlayerModal')">&times;</span>
-            <h2>Edit Player</h2>
-            <input type="hidden" id="editPlayerId">
-            <div class="form-group">
-                <label>Player Name:</label>
-                <input type="text" id="editPlayerName">
-            </div>
-            <div class="form-group">
-                <label>Wins:</label>
-                <input type="number" id="editPlayerWins" min="0">
-            </div>
-            <div class="form-group">
-                <label>Draws:</label>
-                <input type="number" id="editPlayerDraws" min="0">
-            </div>
-            <div class="form-group">
-                <label>Losses:</label>
-                <input type="number" id="editPlayerLosses" min="0">
-            </div>
-            <button onclick="savePlayerEdit()">Save Changes</button>
-        </div>
-    </div>
-
-    <!-- Add Match Modal -->
-    <div id="addMatchModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal('addMatchModal')">&times;</span>
-            <h2>Add Match Result</h2>
-            <div class="form-group">
-                <label>White Player:</label>
-                <select id="matchWhitePlayer"></select>
-            </div>
-            <div class="form-group">
-                <label>Black Player:</label>
-                <select id="matchBlackPlayer"></select>
-            </div>
-            <div class="form-group">
-                <label>Result:</label>
-                <select id="matchResult">
-                    <option value="1-0">White Wins (1-0)</option>
-                    <option value="0-1">Black Wins (0-1)</option>
-                    <option value="0.5-0.5">Draw (½-½)</option>
-                </select>
-            </div>
-            <button onclick="addMatch()">Add Match</button>
-        </div>
-    </div>
-
-    <!-- Add News Modal -->
-    <div id="addNewsModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal('addNewsModal')">&times;</span>
-            <h2>News hinzufügen</h2>
-            <div class="form-group">
-                <label>Title:</label>
-                <input type="text" id="newsTitle" placeholder="News title">
-            </div>
-            <div class="form-group">
-                <label>Content:</label>
-                <textarea id="newsContent" rows="5" placeholder="News content"></textarea>
-            </div>
-            <button onclick="addNews()">News hinzufügen</button>
-        </div>
-    </div>
-
-    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
-        let data = {
-            players: [],
-            matches: [],
-            news: [],
-            playoffs: {
-                semifinals: [],
-                final: null,
-                champion: null
-            }
-        };
         let isAdmin = false;
+        let players = [];
+        let matches = [];
+        let playoffMatches = [];
 
-        // Initialize
-        function init() {
-            loadData();
-        }
-
-        // Load data from file
+        // Load data from localStorage
         function loadData() {
-            const storedData = localStorage.getItem('chessLeagueData');
-            if (storedData) {
-                data = JSON.parse(storedData);
-            } else {
-                // Initialize with sample data
-                data = {
-                    players: [
-                        { id: 1, name: "Magnus Carlsen", wins: 5, draws: 2, losses: 1 },
-                        { id: 2, name: "Hikaru Nakamura", wins: 4, draws: 3, losses: 1 },
-                        { id: 3, name: "Fabiano Caruana", wins: 4, draws: 2, losses: 2 },
-                        { id: 4, name: "Ding Liren", wins: 3, draws: 3, losses: 2 }
-                    ],
-                    matches: [
-                        { id: 1, whitePlayer: "Magnus Carlsen", blackPlayer: "Hikaru Nakamura", result: "1-0", date: "2025-01-20" },
-                        { id: 2, whitePlayer: "Fabiano Caruana", blackPlayer: "Ding Liren", result: "0.5-0.5", date: "2025-01-21" },
-                        { id: 3, whitePlayer: "Hikaru Nakamura", blackPlayer: "Magnus Carlsen", result: "0-1", date: "2025-01-22" }
-                    ],
-                    news: [
-                        { id: 1, title: "League Season Opens!", content: "Welcome to the new season of ISN Chess League. May the best player win!", date: "2025-01-15" },
-                        { id: 2, title: "Tournament Rules Updated", content: "Please review the updated tournament rules on our website.", date: "2025-01-18" }
-                    ]
-                };
-                saveData();
-            }
-            render();
+            const savedPlayers = localStorage.getItem('chessPlayers');
+            const savedMatches = localStorage.getItem('chessMatches');
+            
+            if (savedPlayers) players = JSON.parse(savedPlayers);
+            if (savedMatches) matches = JSON.parse(savedMatches);
+            
+            updateUI();
         }
 
         // Save data to localStorage
         function saveData() {
-            localStorage.setItem('chessLeagueData', JSON.stringify(data));
+            localStorage.setItem('chessPlayers', JSON.stringify(players));
+            localStorage.setItem('chessMatches', JSON.stringify(matches));
         }
 
-        // Render all sections
-        function render() {
-            renderStandings();
-            renderMatches();
-            renderPlayoffs();
-            renderNews();
-            updateAdminVisibility();
-        }
-
-        // Calculate standings
-        function calculateStandings() {
-            return data.players.map(player => {
-                const played = player.wins + player.draws + player.losses;
-                const points = player.wins * 1 + player.draws * 0.5;
-                return { ...player, played, points };
-            }).sort((a, b) => {
-                if (b.points !== a.points) return b.points - a.points;
-                return b.wins - a.wins; // Tiebreaker: more wins
-            });
-        }
-
-        // Render standings table
-        function renderStandings() {
-            const standings = calculateStandings();
-            const tbody = document.getElementById('standingsBody');
-            tbody.innerHTML = '';
-
-            standings.forEach((player, index) => {
-                const row = document.createElement('tr');
-                row.className = `rank-${index + 1}`;
-                
-                let medal = '';
-                if (index === 0) medal = '♔';
-                else if (index === 1) medal = '♕';
-                else if (index === 2) medal = '♗';
-
-                row.innerHTML = `
-                    <td>${medal} ${index + 1}</td>
-                    <td>${player.name}</td>
-                    <td>${player.played}</td>
-                    <td>${player.wins}</td>
-                    <td>${player.draws}</td>
-                    <td>${player.losses}</td>
-                    <td><strong>${player.points}</strong></td>
-                    ${isAdmin ? `<td>
-                        <button class="secondary" onclick="editPlayer(${player.id})">Bearbeiten</button>
-                        <button class="danger" onclick="deletePlayer(${player.id})">Löschen</button>
-                    </td>` : ''}
-                `;
-                tbody.appendChild(row);
-            });
-        }
-
-        // Render matches
-        function renderMatches() {
-            const container = document.getElementById('matchesContainer');
-            container.innerHTML = '';
-
-            const sortedMatches = [...data.matches].sort((a, b) => new Date(b.date) - new Date(a.date));
-
-            sortedMatches.slice(0, 10).forEach(match => {
-                const div = document.createElement('div');
-                div.className = 'match-result';
-                
-                const whiteWins = match.result === '1-0';
-                const blackWins = match.result === '0-1';
-                const draw = match.result === '0.5-0.5';
-
-                div.innerHTML = `
-                    <div class="player ${whiteWins ? 'winner' : ''}">
-                        <span class="chess-piece">♔</span>${match.whitePlayer}
-                    </div>
-                    <div class="score">${match.result}</div>
-                    <div class="player ${blackWins ? 'winner' : ''}">
-                        ${match.blackPlayer}<span class="chess-piece">♚</span>
-                    </div>
-                    ${isAdmin ? `<button class="danger" onclick="deleteMatch(${match.id})">Löschen</button>` : ''}
-                `;
-                container.appendChild(div);
-            });
-        }
-
-        // Render news
-        function renderNews() {
-            const container = document.getElementById('newsContainer');
-            container.innerHTML = '';
-
-            const sortedNews = [...data.news].sort((a, b) => new Date(b.date) - new Date(a.date));
-
-            sortedNews.forEach(newsItem => {
-                const div = document.createElement('div');
-                div.className = 'news-item';
-                div.innerHTML = `
-                    <h3>${newsItem.title}</h3>
-                    <div class="news-date">${new Date(newsItem.date).toLocaleDateString()}</div>
-                    <p>${newsItem.content}</p>
-                    ${isAdmin ? `<button class="danger" onclick="deleteNews(${newsItem.id})" style="margin-top: 10px;">Löschen</button>` : ''}
-                `;
-                container.appendChild(div);
-            });
-
-            if (sortedNews.length === 0) {
-                container.innerHTML = '<p style="color: #b8b8b8; font-style: italic;">No news available.</p>';
-            }
-        }
-
-        // Automatische Spielgenerierung
-        function generateRoundRobin() {
-            if (!confirm('Möchten Sie wirklich ein Round-Robin-Turnier generieren? Dies erstellt Spiele für jeden Spieler gegen jeden anderen.')) return;
-            
-            const players = data.players;
-            if (players.length < 2) {
-                showNotification('Mindestens 2 Spieler erforderlich!', true);
-                return;
-            }
-
-            let newMatchId = data.matches.length > 0 ? Math.max(...data.matches.map(m => m.id)) + 1 : 1;
-            let matchesCreated = 0;
-
-            // Jeder gegen jeden
-            for (let i = 0; i < players.length; i++) {
-                for (let j = i + 1; j < players.length; j++) {
-                    // Prüfe ob dieses Match bereits existiert
-                    const existingMatch = data.matches.find(m => 
-                        (m.whitePlayer === players[i].name && m.blackPlayer === players[j].name) ||
-                        (m.whitePlayer === players[j].name && m.blackPlayer === players[i].name)
-                    );
-
-                    if (!existingMatch) {
-                        data.matches.push({
-                            id: newMatchId++,
-                            whitePlayer: players[i].name,
-                            blackPlayer: players[j].name,
-                            result: 'Ausstehend',
-                            date: new Date().toISOString().split('T')[0]
-                        });
-                        matchesCreated++;
-                    }
-                }
-            }
-
-            saveData();
-            render();
-            showNotification(`${matchesCreated} Spiele automatisch generiert!`);
-        }
-
-        // Playoff-Funktionen
-        function generatePlayoffs() {
-            if (!confirm('Playoffs generieren? Die Top 4 Spieler aus der Tabelle werden ausgewählt.')) return;
-
-            const standings = data.players
-                .map(player => {
-                    const wins = player.wins || 0;
-                    const draws = player.draws || 0;
-                    const losses = player.losses || 0;
-                    const points = wins + draws * 0.5;
-                    const gamesPlayed = wins + draws + losses;
-                    return { ...player, points, gamesPlayed };
-                })
-                .sort((a, b) => {
-                    if (b.points !== a.points) return b.points - a.points;
-                    return b.wins - a.wins;
-                });
-
-            if (standings.length < 4) {
-                showNotification('Mindestens 4 Spieler benötigt für Playoffs!', true);
-                return;
-            }
-
-            // Halbfinale: 1 vs 4, 2 vs 3
-            data.playoffs.semifinals = [
-                {
-                    id: 1,
-                    player1: standings[0].name,
-                    player2: standings[3].name,
-                    winner: null,
-                    completed: false
-                },
-                {
-                    id: 2,
-                    player1: standings[1].name,
-                    player2: standings[2].name,
-                    winner: null,
-                    completed: false
-                }
-            ];
-
-            data.playoffs.final = null;
-            data.playoffs.champion = null;
-
-            saveData();
-            render();
-            showNotification('Playoffs generiert!');
-        }
-
-        function renderPlayoffs() {
-            const container = document.getElementById('playoffsSection');
-            if (!data.playoffs.semifinals || data.playoffs.semifinals.length === 0) {
-                container.innerHTML = `
-                    <h2>Playoffs</h2>
-                    <p style="color: #cccccc;">Noch keine Playoffs generiert.</p>
-                    ${isAdmin ? '<button onclick="generatePlayoffs()" class="secondary">Playoffs generieren</button>' : ''}
-                `;
-                return;
-            }
-
-            let html = '<h2>🏆 Playoffs 🏆</h2>';
-
-            // Halbfinale
-            html += '<h3 style="color: #e30613; margin-top: 20px;">Halbfinale</h3>';
-            html += '<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-bottom: 30px;">';
-            
-            data.playoffs.semifinals.forEach(match => {
-                const statusColor = match.completed ? '#4ecca3' : '#ffa500';
-                html += `
-                    <div style="background: rgba(20, 20, 20, 0.9); padding: 20px; border-radius: 10px; border: 2px solid ${statusColor};">
-                        <div style="font-size: 1.2em; margin-bottom: 15px; text-align: center;">
-                            <div style="color: #ffffff; margin: 10px 0;">${match.player1}</div>
-                            <div style="color: #e30613; font-weight: bold;">VS</div>
-                            <div style="color: #ffffff; margin: 10px 0;">${match.player2}</div>
-                        </div>
-                        ${match.completed ? 
-                            `<div style="text-align: center; color: #4ecca3; font-weight: bold; margin-top: 15px;">
-                                Gewinner: ${match.winner}
-                            </div>` : 
-                            (isAdmin ? `<button onclick="enterPlayoffResult(${match.id}, 'semifinal')" style="width: 100%; margin-top: 10px;">Ergebnis eingeben</button>` : 
-                            '<div style="text-align: center; color: #ffa500; margin-top: 15px;">Ausstehend</div>')
-                        }
-                    </div>
-                `;
-            });
-            html += '</div>';
-
-            // Finale
-            if (data.playoffs.final) {
-                html += '<h3 style="color: #FFD700; margin-top: 30px;">🏆 Finale 🏆</h3>';
-                const match = data.playoffs.final;
-                const statusColor = match.completed ? '#4ecca3' : '#ffa500';
-                html += `
-                    <div style="background: rgba(20, 20, 20, 0.9); padding: 30px; border-radius: 10px; border: 3px solid ${statusColor}; max-width: 500px; margin: 0 auto;">
-                        <div style="font-size: 1.4em; margin-bottom: 20px; text-align: center;">
-                            <div style="color: #ffffff; margin: 15px 0; font-weight: bold;">${match.player1}</div>
-                            <div style="color: #FFD700; font-weight: bold; font-size: 1.2em;">VS</div>
-                            <div style="color: #ffffff; margin: 15px 0; font-weight: bold;">${match.player2}</div>
-                        </div>
-                        ${match.completed ? 
-                            `<div style="text-align: center; color: #FFD700; font-weight: bold; font-size: 1.3em; margin-top: 20px;">
-                                Gewinner: ${match.winner}
-                            </div>` : 
-                            (isAdmin ? `<button onclick="enterPlayoffResult(0, 'final')" style="width: 100%; margin-top: 15px; font-size: 1.1em;">Ergebnis eingeben</button>` : 
-                            '<div style="text-align: center; color: #ffa500; margin-top: 20px; font-size: 1.1em;">Ausstehend</div>')
-                        }
-                    </div>
-                `;
-            } else if (data.playoffs.semifinals.every(m => m.completed)) {
-                // Beide Halbfinals abgeschlossen, Finale kann generiert werden
-                if (isAdmin) {
-                    html += `
-                        <div style="text-align: center; margin-top: 30px;">
-                            <button onclick="createFinal()" style="font-size: 1.2em; padding: 15px 30px;">Finale erstellen</button>
-                        </div>
-                    `;
-                }
-            }
-
-            // Champion anzeigen
-            if (data.playoffs.champion) {
-                html += `
-                    <div style="background: linear-gradient(135deg, rgba(227, 6, 19, 0.3), rgba(255, 215, 0, 0.3)); padding: 30px; border-radius: 15px; text-align: center; margin-top: 40px; border: 3px solid #FFD700;">
-                        <h2 style="color: #FFD700; font-size: 2.5em; margin-bottom: 15px;">🏆 CHAMPION 🏆</h2>
-                        <h3 style="color: #ffffff; font-size: 2em;">${data.playoffs.champion}</h3>
-                    </div>
-                `;
-            }
-
-            if (isAdmin && data.playoffs.semifinals.length > 0) {
-                html += `
-                    <div style="text-align: center; margin-top: 30px;">
-                        <button onclick="resetPlayoffs()" class="danger">Playoffs zurücksetzen</button>
-                    </div>
-                `;
-            }
-
-            container.innerHTML = html;
-        }
-
-        function createFinal() {
-            const winners = data.playoffs.semifinals.filter(m => m.completed && m.winner).map(m => m.winner);
-            if (winners.length !== 2) {
-                showNotification('Beide Halbfinals müssen abgeschlossen sein!', true);
-                return;
-            }
-
-            data.playoffs.final = {
-                player1: winners[0],
-                player2: winners[1],
-                winner: null,
-                completed: false
-            };
-
-            saveData();
-            render();
-            showNotification('Finale erstellt!');
-        }
-
-        function enterPlayoffResult(matchId, type) {
-            let match;
-            if (type === 'semifinal') {
-                match = data.playoffs.semifinals.find(m => m.id === matchId);
-            } else {
-                match = data.playoffs.final;
-            }
-
-            if (!match) return;
-
-            const winner = prompt(`Gewinner von ${match.player1} vs ${match.player2}:\n1 für ${match.player1}\n2 für ${match.player2}`);
-            
-            if (winner !== '1' && winner !== '2') {
-                showNotification('Ungültige Eingabe!', true);
-                return;
-            }
-
-            match.winner = winner === '1' ? match.player1 : match.player2;
-            match.completed = true;
-
-            if (type === 'final') {
-                data.playoffs.champion = match.winner;
-            }
-
-            saveData();
-            render();
-            showNotification('Playoff-Ergebnis gespeichert!');
-        }
-
-        function resetPlayoffs() {
-            if (!confirm('Playoffs wirklich zurücksetzen? Alle Playoff-Daten gehen verloren!')) return;
-            
-            data.playoffs = {
-                semifinals: [],
-                final: null,
-                champion: null
-            };
-
-            saveData();
-            render();
-            showNotification('Playoffs zurückgesetzt!');
-        }
-
-        // Admin login
-        function showAdminLogin() {
-            document.getElementById('adminLoginModal').style.display = 'block';
-        }
-
-        function adminLogin() {
-            const password = document.getElementById('adminPassword').value;
-            if (password === '5082') {
+        // Login function
+        function login() {
+            const password = document.getElementById('passwordInput').value;
+            if (password === ADMIN_PASSWORD) {
                 isAdmin = true;
-                showNotification('Admin access granted!');
-                closeModal('adminLoginModal');
-                updateAdminVisibility();
-                render();
+                document.getElementById('loginSection').classList.add('hidden');
+                document.getElementById('adminPanel').classList.remove('hidden');
+                alert('Erfolgreich angemeldet!');
             } else {
-                showNotification('Incorrect password!', true);
+                alert('Falsches Passwort!');
             }
-            document.getElementById('adminPassword').value = '';
         }
 
-        function logout() {
-            isAdmin = false;
-            showNotification('Logged out successfully');
-            updateAdminVisibility();
-            render();
-        }
-
-        function updateAdminVisibility() {
-            const adminSections = document.querySelectorAll('.admin-section');
-            const logoutBtn = document.getElementById('logoutBtn');
-            
-            adminSections.forEach(section => {
-                section.style.display = isAdmin ? 'block' : 'none';
-            });
-            
-            logoutBtn.style.display = isAdmin ? 'inline-block' : 'none';
-        }
-
-        // Player management
-        function showAddPlayerModal() {
-            document.getElementById('addPlayerModal').style.display = 'block';
-        }
-
+        // Add player
         function addPlayer() {
             const name = document.getElementById('newPlayerName').value.trim();
             if (!name) {
-                showNotification('Please enter a player name!', true);
+                alert('Bitte einen Spielernamen eingeben!');
+                return;
+            }
+            
+            if (players.find(p => p.name === name)) {
+                alert('Dieser Spieler existiert bereits!');
                 return;
             }
 
-            const newId = data.players.length > 0 ? Math.max(...data.players.map(p => p.id)) + 1 : 1;
-            data.players.push({
-                id: newId,
+            players.push({
                 name: name,
                 wins: 0,
                 draws: 0,
-                losses: 0
+                losses: 0,
+                points: 0,
+                games: 0
             });
 
-            saveData();
-            render();
-            closeModal('addPlayerModal');
             document.getElementById('newPlayerName').value = '';
-            showNotification('Player added successfully!');
-        }
-
-        function editPlayer(id) {
-            const player = data.players.find(p => p.id === id);
-            if (!player) return;
-
-            document.getElementById('editPlayerId').value = player.id;
-            document.getElementById('editPlayerName').value = player.name;
-            document.getElementById('editPlayerWins').value = player.wins;
-            document.getElementById('editPlayerDraws').value = player.draws;
-            document.getElementById('editPlayerLosses').value = player.losses;
-            document.getElementById('editPlayerModal').style.display = 'block';
-        }
-
-        function savePlayerEdit() {
-            const id = parseInt(document.getElementById('editPlayerId').value);
-            const player = data.players.find(p => p.id === id);
-            if (!player) return;
-
-            player.name = document.getElementById('editPlayerName').value.trim();
-            player.wins = parseInt(document.getElementById('editPlayerWins').value) || 0;
-            player.draws = parseInt(document.getElementById('editPlayerDraws').value) || 0;
-            player.losses = parseInt(document.getElementById('editPlayerLosses').value) || 0;
-
             saveData();
-            render();
-            closeModal('editPlayerModal');
-            showNotification('Player updated successfully!');
+            updateUI();
         }
 
-        function deletePlayer(id) {
-            if (!confirm('Are you sure you want to delete this player?')) return;
-            
-            data.players = data.players.filter(p => p.id !== id);
-            saveData();
-            render();
-            showNotification('Player deleted successfully!');
+        // Remove player
+        function removePlayer(playerName) {
+            if (confirm(`Möchten Sie ${playerName} wirklich löschen?`)) {
+                players = players.filter(p => p.name !== playerName);
+                saveData();
+                updateUI();
+            }
         }
 
-        // Match management
-        function showAddMatchModal() {
-            const whiteSelect = document.getElementById('matchWhitePlayer');
-            const blackSelect = document.getElementById('matchBlackPlayer');
-            
-            whiteSelect.innerHTML = '';
-            blackSelect.innerHTML = '';
-            
-            data.players.forEach(player => {
-                whiteSelect.innerHTML += `<option value="${player.name}">${player.name}</option>`;
-                blackSelect.innerHTML += `<option value="${player.name}">${player.name}</option>`;
-            });
-            
-            document.getElementById('addMatchModal').style.display = 'block';
-        }
-
-        function addMatch() {
-            const whitePlayer = document.getElementById('matchWhitePlayer').value;
-            const blackPlayer = document.getElementById('matchBlackPlayer').value;
-            const result = document.getElementById('matchResult').value;
-
-            if (whitePlayer === blackPlayer) {
-                showNotification('Players must be different!', true);
+        // Generate matches using Swiss-system pairing
+        function generateMatches() {
+            const roundNum = document.getElementById('roundNumber').value;
+            if (!roundNum || players.length < 2) {
+                alert('Bitte eine Spieltag-Nummer eingeben und mindestens 2 Spieler haben!');
                 return;
             }
 
-            const newId = data.matches.length > 0 ? Math.max(...data.matches.map(m => m.id)) + 1 : 1;
-            data.matches.push({
-                id: newId,
-                whitePlayer: whitePlayer,
-                blackPlayer: blackPlayer,
-                result: result,
-                date: new Date().toISOString().split('T')[0]
-            });
+            // Sort players by points (for Swiss system)
+            const sortedPlayers = [...players].sort((a, b) => b.points - a.points);
+            
+            const newMatches = [];
+            const paired = new Set();
 
-            // Update player statistics
-            const white = data.players.find(p => p.name === whitePlayer);
-            const black = data.players.find(p => p.name === blackPlayer);
+            for (let i = 0; i < sortedPlayers.length; i++) {
+                if (paired.has(sortedPlayers[i].name)) continue;
+                
+                for (let j = i + 1; j < sortedPlayers.length; j++) {
+                    if (paired.has(sortedPlayers[j].name)) continue;
+                    
+                    newMatches.push({
+                        round: parseInt(roundNum),
+                        player1: sortedPlayers[i].name,
+                        player2: sortedPlayers[j].name,
+                        result: null
+                    });
+                    
+                    paired.add(sortedPlayers[i].name);
+                    paired.add(sortedPlayers[j].name);
+                    break;
+                }
+            }
 
+            matches.push(...newMatches);
+            saveData();
+            updateUI();
+            alert(`${newMatches.length} Paarungen für Spieltag ${roundNum} erstellt!`);
+        }
+
+        // Update match result
+        function updateMatchResult(matchIndex, result) {
+            const match = matches[matchIndex];
+            if (!match) return;
+
+            const player1 = players.find(p => p.name === match.player1);
+            const player2 = players.find(p => p.name === match.player2);
+
+            // Remove previous result if exists
+            if (match.result) {
+                if (match.result === '1-0') {
+                    player1.wins--;
+                    player1.points--;
+                    player2.losses--;
+                    player1.games--;
+                    player2.games--;
+                } else if (match.result === '0-1') {
+                    player2.wins--;
+                    player2.points--;
+                    player1.losses--;
+                    player1.games--;
+                    player2.games--;
+                } else if (match.result === '0.5-0.5') {
+                    player1.draws--;
+                    player2.draws--;
+                    player1.points -= 0.5;
+                    player2.points -= 0.5;
+                    player1.games--;
+                    player2.games--;
+                }
+            }
+
+            // Apply new result
+            match.result = result;
             if (result === '1-0') {
-                white.wins++;
-                black.losses++;
+                player1.wins++;
+                player1.points++;
+                player2.losses++;
+                player1.games++;
+                player2.games++;
             } else if (result === '0-1') {
-                black.wins++;
-                white.losses++;
-            } else {
-                white.draws++;
-                black.draws++;
+                player2.wins++;
+                player2.points++;
+                player1.losses++;
+                player1.games++;
+                player2.games++;
+            } else if (result === '0.5-0.5') {
+                player1.draws++;
+                player2.draws++;
+                player1.points += 0.5;
+                player2.points += 0.5;
+                player1.games++;
+                player2.games++;
             }
 
             saveData();
-            render();
-            closeModal('addMatchModal');
-            showNotification('Match added successfully!');
+            updateUI();
         }
 
-        function deleteMatch(id) {
-            if (!confirm('Are you sure you want to delete this match?')) return;
-            
-            data.matches = data.matches.filter(m => m.id !== id);
-            saveData();
-            render();
-            showNotification('Match deleted successfully!');
+        // Update playoff match result
+        function updatePlayoffResult(matchId, winner) {
+            const match = playoffMatches.find(m => m.id === matchId);
+            if (match) {
+                match.winner = winner;
+                updateUI();
+            }
         }
 
-        // News management
-        function showAddNewsModal() {
-            document.getElementById('addNewsModal').style.display = 'block';
-        }
-
-        function addNews() {
-            const title = document.getElementById('newsTitle').value.trim();
-            const content = document.getElementById('newsContent').value.trim();
-
-            if (!title || !content) {
-                showNotification('Please fill in all fields!', true);
+        // Start playoffs
+        function startPlayoffs() {
+            if (players.length < 4) {
+                alert('Mindestens 4 Spieler benötigt für Playoffs!');
                 return;
             }
 
-            const newId = data.news.length > 0 ? Math.max(...data.news.map(n => n.id)) + 1 : 1;
-            data.news.push({
-                id: newId,
-                title: title,
-                content: content,
-                date: new Date().toISOString().split('T')[0]
+            const sortedPlayers = [...players].sort((a, b) => b.points - a.points);
+            const top4 = sortedPlayers.slice(0, 4);
+
+            playoffMatches = [
+                { id: 'semi1', player1: top4[0].name, player2: top4[3].name, winner: null },
+                { id: 'semi2', player1: top4[1].name, player2: top4[2].name, winner: null },
+                { id: 'final', player1: null, player2: null, winner: null }
+            ];
+
+            document.getElementById('playoffsBracket').classList.remove('hidden');
+            document.getElementById('startPlayoffsBtn').classList.add('hidden');
+            updateUI();
+        }
+
+        // Update UI
+        function updateUI() {
+            // Update player list
+            const playerListDiv = document.getElementById('playerList');
+            playerListDiv.innerHTML = '';
+            players.forEach(player => {
+                const playerDiv = document.createElement('div');
+                playerDiv.className = 'player-item';
+                playerDiv.innerHTML = `
+                    <span>${player.name}</span>
+                    ${isAdmin ? `<button class="btn btn-danger" style="padding: 6px 12px; font-size: 0.9rem;" onclick="removePlayer('${player.name}')">Löschen</button>` : ''}
+                `;
+                playerListDiv.appendChild(playerDiv);
             });
 
-            saveData();
-            render();
-            closeModal('addNewsModal');
-            document.getElementById('newsTitle').value = '';
-            document.getElementById('newsContent').value = '';
-            showNotification('News added successfully!');
-        }
+            // Update standings
+            const standingsTable = document.getElementById('standingsTable');
+            const sortedPlayers = [...players].sort((a, b) => b.points - a.points);
+            standingsTable.innerHTML = '';
+            sortedPlayers.forEach((player, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><strong>${index + 1}</strong></td>
+                    <td><strong>${player.name}</strong></td>
+                    <td>${player.games}</td>
+                    <td>${player.wins}</td>
+                    <td>${player.draws}</td>
+                    <td>${player.losses}</td>
+                    <td><strong>${player.points.toFixed(1)}</strong></td>
+                `;
+                standingsTable.appendChild(row);
+            });
 
-        function deleteNews(id) {
-            if (!confirm('Are you sure you want to delete this news item?')) return;
+            // Update matches
+            const matchesList = document.getElementById('matchesList');
+            matchesList.innerHTML = '';
             
-            data.news = data.news.filter(n => n.id !== id);
-            saveData();
-            render();
-            showNotification('News deleted successfully!');
-        }
+            const matchesByRound = {};
+            matches.forEach(match => {
+                if (!matchesByRound[match.round]) {
+                    matchesByRound[match.round] = [];
+                }
+                matchesByRound[match.round].push(match);
+            });
 
-        // Modal management
-        function closeModal(modalId) {
-            document.getElementById(modalId).style.display = 'none';
-        }
+            Object.keys(matchesByRound).sort((a, b) => b - a).forEach(round => {
+                const roundDiv = document.createElement('div');
+                roundDiv.style.marginBottom = '25px';
+                roundDiv.innerHTML = `<h3 style="color: var(--primary-red); margin-bottom: 15px; font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; letter-spacing: 2px;">Spieltag ${round}</h3>`;
+                
+                matchesByRound[round].forEach((match, idx) => {
+                    const matchDiv = document.createElement('div');
+                    matchDiv.className = 'match';
+                    const globalIndex = matches.indexOf(match);
+                    
+                    matchDiv.innerHTML = `
+                        <div class="match-players">
+                            <span>${match.player1}</span>
+                            <span class="match-vs">VS</span>
+                            <span>${match.player2}</span>
+                        </div>
+                        <select class="result-select" onchange="updateMatchResult(${globalIndex}, this.value)" ${!isAdmin ? 'disabled' : ''}>
+                            <option value="">Ergebnis wählen</option>
+                            <option value="1-0" ${match.result === '1-0' ? 'selected' : ''}>1-0 (${match.player1} gewinnt)</option>
+                            <option value="0.5-0.5" ${match.result === '0.5-0.5' ? 'selected' : ''}>0.5-0.5 (Unentschieden)</option>
+                            <option value="0-1" ${match.result === '0-1' ? 'selected' : ''}>0-1 (${match.player2} gewinnt)</option>
+                        </select>
+                    `;
+                    roundDiv.appendChild(matchDiv);
+                });
+                
+                matchesList.appendChild(roundDiv);
+            });
 
-        // Close modal when clicking outside
-        window.onclick = function(event) {
-            if (event.target.classList.contains('modal')) {
-                event.target.style.display = 'none';
+            // Update playoffs
+            if (playoffMatches.length > 0) {
+                const semi1 = playoffMatches.find(m => m.id === 'semi1');
+                const semi2 = playoffMatches.find(m => m.id === 'semi2');
+                const final = playoffMatches.find(m => m.id === 'final');
+
+                document.getElementById('playoff1').innerHTML = `
+                    <h4 style="margin-bottom: 15px; font-family: 'Bebas Neue', sans-serif; font-size: 1.3rem;">Halbfinale 1</h4>
+                    <div style="font-size: 1.1rem; margin: 15px 0;">${semi1.player1} <span style="color: var(--primary-red);">VS</span> ${semi1.player2}</div>
+                    ${isAdmin ? `
+                        <select onchange="updatePlayoffResult('semi1', this.value)" style="margin-top: 10px;">
+                            <option value="">Gewinner wählen</option>
+                            <option value="${semi1.player1}" ${semi1.winner === semi1.player1 ? 'selected' : ''}>${semi1.player1}</option>
+                            <option value="${semi1.player2}" ${semi1.winner === semi1.player2 ? 'selected' : ''}>${semi1.player2}</option>
+                        </select>
+                    ` : ''}
+                    ${semi1.winner ? `<div style="margin-top: 15px; color: var(--primary-red); font-weight: 700;">Gewinner: ${semi1.winner}</div>` : ''}
+                `;
+
+                document.getElementById('playoff2').innerHTML = `
+                    <h4 style="margin-bottom: 15px; font-family: 'Bebas Neue', sans-serif; font-size: 1.3rem;">Halbfinale 2</h4>
+                    <div style="font-size: 1.1rem; margin: 15px 0;">${semi2.player1} <span style="color: var(--primary-red);">VS</span> ${semi2.player2}</div>
+                    ${isAdmin ? `
+                        <select onchange="updatePlayoffResult('semi2', this.value)" style="margin-top: 10px;">
+                            <option value="">Gewinner wählen</option>
+                            <option value="${semi2.player1}" ${semi2.winner === semi2.player1 ? 'selected' : ''}>${semi2.player1}</option>
+                            <option value="${semi2.player2}" ${semi2.winner === semi2.player2 ? 'selected' : ''}>${semi2.player2}</option>
+                        </select>
+                    ` : ''}
+                    ${semi2.winner ? `<div style="margin-top: 15px; color: var(--primary-red); font-weight: 700;">Gewinner: ${semi2.winner}</div>` : ''}
+                `;
+
+                if (semi1.winner && semi2.winner) {
+                    final.player1 = semi1.winner;
+                    final.player2 = semi2.winner;
+
+                    document.getElementById('finalContent').innerHTML = `
+                        <div style="font-size: 1.3rem; margin: 15px 0; font-weight: 700;">${final.player1} <span style="color: var(--white);">VS</span> ${final.player2}</div>
+                        ${isAdmin ? `
+                            <select onchange="updatePlayoffResult('final', this.value)" style="margin-top: 15px;">
+                                <option value="">Champion wählen</option>
+                                <option value="${final.player1}" ${final.winner === final.player1 ? 'selected' : ''}>${final.player1}</option>
+                                <option value="${final.player2}" ${final.winner === final.player2 ? 'selected' : ''}>${final.player2}</option>
+                            </select>
+                        ` : ''}
+                        ${final.winner ? `<div style="margin-top: 20px; font-size: 2rem; font-family: 'Bebas Neue', sans-serif; letter-spacing: 3px;">🏆 Champion: ${final.winner} 🏆</div>` : ''}
+                    `;
+                }
             }
         }
 
-        // Notification
-        function showNotification(message, isError = false) {
-            const notification = document.getElementById('notification');
-            notification.textContent = message;
-            notification.style.background = isError ? '#e63946' : '#4ecca3';
-    
+        // Initialize
+        loadData();
+    </script>
+</body>
+</html>
