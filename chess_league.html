@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>International School Neustadt - Chess League</title>
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -22,7 +22,7 @@
         }
 
         body {
-            font-family: 'Rajdhani', sans-serif;
+            font-family: 'Libre Baskerville', 'Georgia', serif;
             background: var(--black);
             color: var(--white);
             min-height: 100vh;
@@ -31,6 +31,22 @@
         }
 
         body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url('/mnt/user-data/uploads/Logo_2.png');
+            background-position: center center;
+            background-repeat: no-repeat;
+            background-size: 60%;
+            opacity: 0.08;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        body::after {
             content: '';
             position: fixed;
             top: 0;
@@ -57,27 +73,10 @@
             position: relative;
         }
 
-        .logo-container {
-            position: relative;
-            display: inline-block;
-            margin-bottom: 20px;
-        }
-
-        .logo {
-            max-width: 280px;
-            height: auto;
-            filter: drop-shadow(0 10px 30px rgba(227, 30, 36, 0.4));
-            animation: logoFloat 6s ease-in-out infinite;
-        }
-
-        @keyframes logoFloat {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-        }
-
         .title {
-            font-family: 'Bebas Neue', sans-serif;
+            font-family: 'Libre Baskerville', serif;
             font-size: 3.5rem;
+            font-weight: 700;
             letter-spacing: 4px;
             margin: 20px 0;
             background: linear-gradient(135deg, var(--white) 0%, var(--primary-red) 100%);
@@ -117,8 +116,9 @@
         }
 
         .section-title {
-            font-family: 'Bebas Neue', sans-serif;
+            font-family: 'Libre Baskerville', serif;
             font-size: 2rem;
+            font-weight: 700;
             color: var(--primary-red);
             margin-bottom: 20px;
             letter-spacing: 2px;
@@ -133,7 +133,7 @@
             padding: 12px 28px;
             font-size: 1rem;
             font-weight: 600;
-            font-family: 'Rajdhani', sans-serif;
+            font-family: 'Libre Baskerville', serif;
             letter-spacing: 1px;
             cursor: pointer;
             border-radius: 6px;
@@ -171,7 +171,7 @@
             border: 1px solid var(--primary-red);
             border-radius: 6px;
             color: var(--white);
-            font-family: 'Rajdhani', sans-serif;
+            font-family: 'Libre Baskerville', serif;
             font-size: 1rem;
         }
 
@@ -193,8 +193,9 @@
             color: var(--white);
             padding: 15px;
             text-align: left;
-            font-family: 'Bebas Neue', sans-serif;
+            font-family: 'Libre Baskerville', serif;
             font-size: 1.2rem;
+            font-weight: 700;
             letter-spacing: 2px;
         }
 
@@ -326,10 +327,6 @@
                 grid-template-columns: 1fr;
             }
 
-            .logo {
-                max-width: 200px;
-            }
-
             th, td {
                 padding: 8px;
                 font-size: 0.9rem;
@@ -340,10 +337,7 @@
 <body>
     <div class="container">
         <div class="header">
-            <div class="logo-container">
-                <img src="/mnt/user-data/uploads/Logo_2.png" alt="Chess League Logo" class="logo" id="logo">
-            </div>
-            <h1 class="title">Schachliga Verwaltung</h1>
+            <h1 class="title">ISN Chess League</h1>
         </div>
 
         <!-- Admin Login -->
@@ -402,12 +396,12 @@
             <h2 class="section-title">Playoffs</h2>
             <button class="btn" onclick="startPlayoffs()" id="startPlayoffsBtn">Playoffs starten</button>
             <div id="playoffsBracket" class="hidden">
-                <h3 style="text-align: center; margin: 20px 0; font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem; color: var(--primary-red);">Halbfinale</h3>
+                <h3 style="text-align: center; margin: 20px 0; font-family: 'Libre Baskerville', serif; font-size: 1.8rem; font-weight: 700; color: var(--primary-red);">Halbfinale</h3>
                 <div class="playoff-bracket">
                     <div class="playoff-match" id="playoff1"></div>
                     <div class="playoff-match" id="playoff2"></div>
                 </div>
-                <h3 style="text-align: center; margin: 30px 0 20px; font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem; color: var(--primary-red);">Finale</h3>
+                <h3 style="text-align: center; margin: 30px 0 20px; font-family: 'Libre Baskerville', serif; font-size: 1.8rem; font-weight: 700; color: var(--primary-red);">Finale</h3>
                 <div class="playoff-match final" id="finalMatch">
                     <div class="trophy">🏆</div>
                     <div id="finalContent">Warte auf Halbfinal-Ergebnisse...</div>
@@ -422,7 +416,7 @@
 
     <script>
         // Admin password (in production, this should be handled server-side)
-        const ADMIN_PASSWORD = 'chess2024';
+        const ADMIN_PASSWORD = '5082';
 
         let isAdmin = false;
         let players = [];
@@ -671,7 +665,7 @@
             Object.keys(matchesByRound).sort((a, b) => b - a).forEach(round => {
                 const roundDiv = document.createElement('div');
                 roundDiv.style.marginBottom = '25px';
-                roundDiv.innerHTML = `<h3 style="color: var(--primary-red); margin-bottom: 15px; font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; letter-spacing: 2px;">Spieltag ${round}</h3>`;
+                roundDiv.innerHTML = `<h3 style="color: var(--primary-red); margin-bottom: 15px; font-family: 'Libre Baskerville', serif; font-size: 1.5rem; font-weight: 700; letter-spacing: 2px;">Spieltag ${round}</h3>`;
                 
                 matchesByRound[round].forEach((match, idx) => {
                     const matchDiv = document.createElement('div');
@@ -704,7 +698,7 @@
                 const final = playoffMatches.find(m => m.id === 'final');
 
                 document.getElementById('playoff1').innerHTML = `
-                    <h4 style="margin-bottom: 15px; font-family: 'Bebas Neue', sans-serif; font-size: 1.3rem;">Halbfinale 1</h4>
+                    <h4 style="margin-bottom: 15px; font-family: 'Libre Baskerville', serif; font-size: 1.3rem; font-weight: 700;">Halbfinale 1</h4>
                     <div style="font-size: 1.1rem; margin: 15px 0;">${semi1.player1} <span style="color: var(--primary-red);">VS</span> ${semi1.player2}</div>
                     ${isAdmin ? `
                         <select onchange="updatePlayoffResult('semi1', this.value)" style="margin-top: 10px;">
@@ -717,7 +711,7 @@
                 `;
 
                 document.getElementById('playoff2').innerHTML = `
-                    <h4 style="margin-bottom: 15px; font-family: 'Bebas Neue', sans-serif; font-size: 1.3rem;">Halbfinale 2</h4>
+                    <h4 style="margin-bottom: 15px; font-family: 'Libre Baskerville', serif; font-size: 1.3rem; font-weight: 700;">Halbfinale 2</h4>
                     <div style="font-size: 1.1rem; margin: 15px 0;">${semi2.player1} <span style="color: var(--primary-red);">VS</span> ${semi2.player2}</div>
                     ${isAdmin ? `
                         <select onchange="updatePlayoffResult('semi2', this.value)" style="margin-top: 10px;">
@@ -742,7 +736,7 @@
                                 <option value="${final.player2}" ${final.winner === final.player2 ? 'selected' : ''}>${final.player2}</option>
                             </select>
                         ` : ''}
-                        ${final.winner ? `<div style="margin-top: 20px; font-size: 2rem; font-family: 'Bebas Neue', sans-serif; letter-spacing: 3px;">🏆 Champion: ${final.winner} 🏆</div>` : ''}
+                        ${final.winner ? `<div style="margin-top: 20px; font-size: 2rem; font-family: 'Libre Baskerville', serif; font-weight: 700; letter-spacing: 3px;">🏆 Champion: ${final.winner} 🏆</div>` : ''}
                     `;
                 }
             }
