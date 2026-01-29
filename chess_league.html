@@ -101,6 +101,46 @@
             to { filter: drop-shadow(0 0 20px rgba(227, 30, 36, 0.6)); }
         }
 
+        /* Tab Navigation */
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            border-bottom: 2px solid var(--light-gray);
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            background: var(--gray);
+            color: var(--white);
+            border: none;
+            padding: 15px 30px;
+            font-size: 1rem;
+            font-weight: 600;
+            font-family: 'Libre Baskerville', serif;
+            cursor: pointer;
+            border-radius: 8px 8px 0 0;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab-btn:hover {
+            background: var(--light-gray);
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, var(--primary-red) 0%, var(--dark-red) 100%);
+            border-bottom: 3px solid var(--white);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
         .admin-section {
             background: var(--gray);
             border: 2px solid var(--primary-red);
@@ -173,6 +213,7 @@
         input[type="text"],
         input[type="password"],
         input[type="number"],
+        input[type="date"],
         select,
         textarea {
             width: 100%;
@@ -253,9 +294,38 @@
             margin: 0 15px;
         }
 
+        .match-result {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--primary-red);
+        }
+
+        .match-date {
+            font-size: 0.9rem;
+            color: var(--light-gray);
+            margin-left: 15px;
+        }
+
         .result-select {
             width: auto;
             min-width: 120px;
+        }
+
+        .past-match {
+            background: var(--light-gray);
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 6px;
+            border-left: 3px solid var(--dark-red);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            opacity: 0.85;
+        }
+
+        .past-match:hover {
+            opacity: 1;
+            background: rgba(160, 20, 25, 0.15);
         }
 
         .hidden {
@@ -399,6 +469,14 @@
                 padding: 8px;
                 font-size: 0.9rem;
             }
+
+            .tabs {
+                flex-direction: column;
+            }
+
+            .tab-btn {
+                border-radius: 6px;
+            }
         }
     </style>
 </head>
@@ -418,41 +496,117 @@
             </div>
         </div>
 
-        <!-- News/Announcements Section -->
-        <div class="section">
-            <h2 class="section-title">📢 News & Ankündigungen</h2>
-            <div id="adminNewsPanel" class="hidden" style="margin-bottom: 20px;">
-                <h3 style="color: var(--primary-red); margin-bottom: 15px; font-size: 1.2rem;">Neue Ankündigung erstellen</h3>
-                <input type="text" id="newsTitle" placeholder="Titel der Ankündigung">
-                <textarea id="newsContent" placeholder="Inhalt der Ankündigung"></textarea>
-                <button class="btn" onclick="addNews()">Ankündigung hinzufügen</button>
-            </div>
-            <div id="newsList">
-                <p style="color: var(--light-gray);">Noch keine Ankündigungen vorhanden.</p>
-            </div>
+        <!-- Tab Navigation -->
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('news')">📢 News</button>
+            <button class="tab-btn" onclick="switchTab('rules')">📋 Regeln</button>
+            <button class="tab-btn" onclick="switchTab('standings')">🏆 Tabelle</button>
+            <button class="tab-btn" onclick="switchTab('matches')">⚔️ Aktuelle Matches</button>
+            <button class="tab-btn" onclick="switchTab('past')">📜 Vergangene Matches</button>
+            <button class="tab-btn" onclick="switchTab('playoffs')">👑 Playoffs</button>
+            <button class="tab-btn hidden" id="adminTab" onclick="switchTab('admin')">⚙️ Admin</button>
         </div>
 
-        <!-- Rules Section -->
-        <div class="section">
-            <h2 class="section-title">📋 Turnierregeln</h2>
-            <div id="adminRulesPanel" class="hidden" style="margin-bottom: 20px;">
-                <h3 style="color: var(--primary-red); margin-bottom: 15px; font-size: 1.2rem;">Neue Regel hinzufügen</h3>
-                <textarea id="newRule" placeholder="Regel eingeben"></textarea>
-                <button class="btn" onclick="addRule()">Regel hinzufügen</button>
-            </div>
-            <ul class="rules-list" id="rulesList">
-                <li data-number="1">Jeder Spieler spielt gegen jeden anderen Spieler genau einmal.</li>
-                <li data-number="2">Sieg = 1 Punkt, Remis = 0,5 Punkte, Niederlage = 0 Punkte.</li>
-                <li data-number="3">Bedenkzeit: 15 Minuten pro Spieler mit 10 Sekunden Inkrement.</li>
-                <li data-number="4">Die Top 4 Spieler qualifizieren sich für die Playoffs.</li>
-                <li data-number="5">Bei Punktgleichheit entscheidet das direkte Duell.</li>
-            </ul>
-        </div>
-
-        <!-- Admin Panel -->
-        <div id="adminPanel" class="hidden">
+        <!-- News Tab -->
+        <div id="newsTab" class="tab-content active">
             <div class="section">
-                <h2 class="section-title">Spielerverwaltung</h2>
+                <h2 class="section-title">📢 News & Ankündigungen</h2>
+                <div id="adminNewsPanel" class="hidden" style="margin-bottom: 20px;">
+                    <h3 style="color: var(--primary-red); margin-bottom: 15px; font-size: 1.2rem;">Neue Ankündigung erstellen</h3>
+                    <input type="text" id="newsTitle" placeholder="Titel der Ankündigung">
+                    <textarea id="newsContent" placeholder="Inhalt der Ankündigung"></textarea>
+                    <button class="btn" onclick="addNews()">Ankündigung hinzufügen</button>
+                </div>
+                <div id="newsList">
+                    <p style="color: var(--light-gray);">Noch keine Ankündigungen vorhanden.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Rules Tab -->
+        <div id="rulesTab" class="tab-content">
+            <div class="section">
+                <h2 class="section-title">📋 Turnierregeln</h2>
+                <div id="adminRulesPanel" class="hidden" style="margin-bottom: 20px;">
+                    <h3 style="color: var(--primary-red); margin-bottom: 15px; font-size: 1.2rem;">Neue Regel hinzufügen</h3>
+                    <textarea id="newRule" placeholder="Regel eingeben"></textarea>
+                    <button class="btn" onclick="addRule()">Regel hinzufügen</button>
+                </div>
+                <ul class="rules-list" id="rulesList">
+                    <li data-number="1">Jeder Spieler spielt gegen jeden anderen Spieler genau einmal.</li>
+                    <li data-number="2">Sieg = 1 Punkt, Remis = 0,5 Punkte, Niederlage = 0 Punkte.</li>
+                    <li data-number="3">Bedenkzeit: 15 Minuten pro Spieler mit 10 Sekunden Inkrement.</li>
+                    <li data-number="4">Die Top 4 Spieler qualifizieren sich für die Playoffs.</li>
+                    <li data-number="5">Bei Punktgleichheit entscheidet das direkte Duell.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Standings Tab -->
+        <div id="standingsTab" class="tab-content">
+            <div class="section">
+                <h2 class="section-title">🏆 Tabelle</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Rang</th>
+                            <th>Spieler</th>
+                            <th>Spiele</th>
+                            <th>Siege</th>
+                            <th>Unentschieden</th>
+                            <th>Niederlagen</th>
+                            <th>Punkte</th>
+                        </tr>
+                    </thead>
+                    <tbody id="standingsTable"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Matches Tab -->
+        <div id="matchesTab" class="tab-content">
+            <div class="section">
+                <h2 class="section-title">⚔️ Aktuelle Spielpaarungen</h2>
+                <div id="matchesList">
+                    <p style="color: var(--light-gray);">Noch keine Spielpaarungen vorhanden.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Past Matches Tab -->
+        <div id="pastTab" class="tab-content">
+            <div class="section">
+                <h2 class="section-title">📜 Vergangene Matches</h2>
+                <div id="pastMatchesList">
+                    <p style="color: var(--light-gray);">Noch keine abgeschlossenen Matches.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Playoffs Tab -->
+        <div id="playoffsTab" class="tab-content">
+            <div class="section">
+                <h2 class="section-title">👑 Playoffs</h2>
+                <button class="btn" onclick="startPlayoffs()" id="startPlayoffsBtn">Playoffs starten</button>
+                <div id="playoffsBracket" class="hidden">
+                    <h3 style="text-align: center; margin: 20px 0; font-family: 'Libre Baskerville', serif; font-size: 1.8rem; font-weight: 700; color: var(--primary-red);">Halbfinale</h3>
+                    <div class="playoff-bracket">
+                        <div class="playoff-match" id="playoff1"></div>
+                        <div class="playoff-match" id="playoff2"></div>
+                    </div>
+                    <h3 style="text-align: center; margin: 30px 0 20px; font-family: 'Libre Baskerville', serif; font-size: 1.8rem; font-weight: 700; color: var(--primary-red);">Finale</h3>
+                    <div class="playoff-match final" id="finalMatch">
+                        <div class="trophy">🏆</div>
+                        <div id="finalContent">Warte auf Halbfinal-Ergebnisse...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Admin Tab -->
+        <div id="adminTab" class="tab-content">
+            <div class="section">
+                <h2 class="section-title">⚙️ Spielerverwaltung</h2>
                 <input type="text" id="newPlayerName" placeholder="Spielername">
                 <button class="btn" onclick="addPlayer()">Spieler hinzufügen</button>
                 
@@ -460,52 +614,22 @@
             </div>
 
             <div class="section">
-                <h2 class="section-title">Spieltag erstellen</h2>
-                <input type="number" id="roundNumber" placeholder="Spieltag Nummer" min="1">
-                <button class="btn" onclick="generateMatches()">Paarungen generieren</button>
+                <h2 class="section-title">⚔️ Match erstellen</h2>
+                <select id="whitePlayer">
+                    <option value="">Weiß wählen</option>
+                </select>
+                <select id="blackPlayer">
+                    <option value="">Schwarz wählen</option>
+                </select>
+                <input type="date" id="matchDate">
+                <button class="btn" onclick="createMatch()">Match erstellen</button>
             </div>
-        </div>
 
-        <!-- Standings -->
-        <div class="section">
-            <h2 class="section-title">Tabelle</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Rang</th>
-                        <th>Spieler</th>
-                        <th>Spiele</th>
-                        <th>Siege</th>
-                        <th>Unentschieden</th>
-                        <th>Niederlagen</th>
-                        <th>Punkte</th>
-                    </tr>
-                </thead>
-                <tbody id="standingsTable"></tbody>
-            </table>
-        </div>
-
-        <!-- Matches -->
-        <div class="section">
-            <h2 class="section-title">Spielpaarungen</h2>
-            <div id="matchesList"></div>
-        </div>
-
-        <!-- Playoffs -->
-        <div class="section">
-            <h2 class="section-title">Playoffs</h2>
-            <button class="btn" onclick="startPlayoffs()" id="startPlayoffsBtn">Playoffs starten</button>
-            <div id="playoffsBracket" class="hidden">
-                <h3 style="text-align: center; margin: 20px 0; font-family: 'Libre Baskerville', serif; font-size: 1.8rem; font-weight: 700; color: var(--primary-red);">Halbfinale</h3>
-                <div class="playoff-bracket">
-                    <div class="playoff-match" id="playoff1"></div>
-                    <div class="playoff-match" id="playoff2"></div>
-                </div>
-                <h3 style="text-align: center; margin: 30px 0 20px; font-family: 'Libre Baskerville', serif; font-size: 1.8rem; font-weight: 700; color: var(--primary-red);">Finale</h3>
-                <div class="playoff-match final" id="finalMatch">
-                    <div class="trophy">🏆</div>
-                    <div id="finalContent">Warte auf Halbfinal-Ergebnisse...</div>
-                </div>
+            <div class="section">
+                <h2 class="section-title">💾 Daten-Export</h2>
+                <button class="btn" onclick="exportData()">JSON herunterladen</button>
+                <button class="btn btn-secondary" onclick="document.getElementById('importFile').click()">JSON importieren</button>
+                <input type="file" id="importFile" style="display: none" accept=".json" onchange="importData(event)">
             </div>
         </div>
 
@@ -515,8 +639,9 @@
     </div>
 
     <script>
-        // Admin password (in production, this should be handled server-side)
+        // Admin password
         const ADMIN_PASSWORD = '5082';
+        const JSON_FILE = 'chess_league_data.json';
 
         let isAdmin = false;
         let players = [];
@@ -531,8 +656,74 @@
             'Bei Punktgleichheit entscheidet das direkte Duell.'
         ];
 
-        // Load data from localStorage
-        function loadData() {
+        // Tab switching
+        function switchTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Remove active from all buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Show selected tab
+            document.getElementById(tabName + 'Tab').classList.add('active');
+            
+            // Activate button
+            event.target.classList.add('active');
+        }
+
+        // Load data from JSON file
+        async function loadDataFromJSON() {
+            try {
+                const response = await fetch(JSON_FILE);
+                if (!response.ok) {
+                    console.log('JSON file not found, using default data');
+                    return;
+                }
+                
+                const data = await response.json();
+                
+                // Convert JSON format to internal format
+                if (data.players) {
+                    players = data.players.map(p => ({
+                        name: p.name,
+                        wins: p.wins || 0,
+                        draws: p.draws || 0,
+                        losses: p.losses || 0,
+                        points: (p.wins || 0) + (p.draws || 0) * 0.5,
+                        games: (p.wins || 0) + (p.draws || 0) + (p.losses || 0)
+                    }));
+                }
+                
+                if (data.matches) {
+                    matches = data.matches.map(m => ({
+                        id: m.id,
+                        player1: m.whitePlayer,
+                        player2: m.blackPlayer,
+                        result: m.result,
+                        date: m.date,
+                        round: Math.ceil(m.id / (players.length / 2))
+                    }));
+                }
+                
+                if (data.news) {
+                    newsItems = data.news;
+                }
+                
+                console.log('Data loaded from JSON successfully');
+                updateUI();
+            } catch (error) {
+                console.error('Error loading JSON:', error);
+                // Fall back to localStorage
+                loadDataFromLocalStorage();
+            }
+        }
+
+        // Load data from localStorage (fallback)
+        function loadDataFromLocalStorage() {
             const savedPlayers = localStorage.getItem('chessPlayers');
             const savedMatches = localStorage.getItem('chessMatches');
             const savedNews = localStorage.getItem('chessNews');
@@ -546,12 +737,105 @@
             updateUI();
         }
 
-        // Save data to localStorage
+        // Save data to localStorage and prepare JSON export
         function saveData() {
             localStorage.setItem('chessPlayers', JSON.stringify(players));
             localStorage.setItem('chessMatches', JSON.stringify(matches));
             localStorage.setItem('chessNews', JSON.stringify(newsItems));
             localStorage.setItem('chessRules', JSON.stringify(rules));
+            
+            // Auto-export JSON
+            autoExportJSON();
+        }
+
+        // Auto-export JSON data
+        function autoExportJSON() {
+            const data = {
+                players: players.map(p => ({
+                    id: players.indexOf(p) + 1,
+                    name: p.name,
+                    wins: p.wins,
+                    draws: p.draws,
+                    losses: p.losses
+                })),
+                matches: matches.map(m => ({
+                    id: m.id || matches.indexOf(m) + 1,
+                    whitePlayer: m.player1,
+                    blackPlayer: m.player2,
+                    result: m.result,
+                    date: m.date || new Date().toISOString().split('T')[0]
+                })),
+                news: newsItems
+            };
+            
+            // Store in localStorage for manual download
+            localStorage.setItem('chessJSONExport', JSON.stringify(data, null, 2));
+        }
+
+        // Export data as JSON file
+        function exportData() {
+            const jsonData = localStorage.getItem('chessJSONExport') || JSON.stringify({
+                players: [],
+                matches: [],
+                news: []
+            }, null, 2);
+            
+            const blob = new Blob([jsonData], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'chess_league_data.json';
+            a.click();
+            URL.revokeObjectURL(url);
+            
+            alert('Daten wurden exportiert!');
+        }
+
+        // Import data from JSON file
+        function importData(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    
+                    // Convert and load data
+                    if (data.players) {
+                        players = data.players.map(p => ({
+                            name: p.name,
+                            wins: p.wins || 0,
+                            draws: p.draws || 0,
+                            losses: p.losses || 0,
+                            points: (p.wins || 0) + (p.draws || 0) * 0.5,
+                            games: (p.wins || 0) + (p.draws || 0) + (p.losses || 0)
+                        }));
+                    }
+                    
+                    if (data.matches) {
+                        matches = data.matches.map(m => ({
+                            id: m.id,
+                            player1: m.whitePlayer,
+                            player2: m.blackPlayer,
+                            result: m.result,
+                            date: m.date,
+                            round: Math.ceil(m.id / (players.length / 2))
+                        }));
+                    }
+                    
+                    if (data.news) {
+                        newsItems = data.news;
+                    }
+                    
+                    saveData();
+                    updateUI();
+                    alert('Daten wurden erfolgreich importiert!');
+                } catch (error) {
+                    alert('Fehler beim Importieren: ' + error.message);
+                }
+            };
+            reader.readAsText(file);
         }
 
         // Login function
@@ -560,9 +844,9 @@
             if (password === ADMIN_PASSWORD) {
                 isAdmin = true;
                 document.getElementById('loginSection').classList.add('hidden');
-                document.getElementById('adminPanel').classList.remove('hidden');
                 document.getElementById('adminNewsPanel').classList.remove('hidden');
                 document.getElementById('adminRulesPanel').classList.remove('hidden');
+                document.getElementById('adminTab').classList.remove('hidden');
                 document.getElementById('logoutBtn').classList.remove('hidden');
                 updateUI();
                 alert('Erfolgreich angemeldet!');
@@ -575,11 +859,12 @@
         function logout() {
             isAdmin = false;
             document.getElementById('loginSection').classList.remove('hidden');
-            document.getElementById('adminPanel').classList.add('hidden');
             document.getElementById('adminNewsPanel').classList.add('hidden');
             document.getElementById('adminRulesPanel').classList.add('hidden');
+            document.getElementById('adminTab').classList.add('hidden');
             document.getElementById('logoutBtn').classList.add('hidden');
             document.getElementById('passwordInput').value = '';
+            switchTab('news');
             updateUI();
         }
 
@@ -600,7 +885,7 @@
                 date: new Date().toLocaleDateString('de-DE')
             };
 
-            newsItems.unshift(newsItem); // Add to beginning of array
+            newsItems.unshift(newsItem);
             document.getElementById('newsTitle').value = '';
             document.getElementById('newsContent').value = '';
             saveData();
@@ -674,64 +959,35 @@
             }
         }
 
-        // Generate matches using round-robin
-        function generateMatches() {
-            const round = parseInt(document.getElementById('roundNumber').value);
-            if (!round || round < 1) {
-                alert('Bitte gültige Spieltag-Nummer eingeben!');
-                return;
-            }
-
-            if (players.length < 2) {
-                alert('Mindestens 2 Spieler benötigt!');
-                return;
-            }
-
-            // Check if round already exists
-            if (matches.some(m => m.round === round)) {
-                alert('Dieser Spieltag existiert bereits!');
-                return;
-            }
-
-            let playerList = [...players.map(p => p.name)];
+        // Create match
+        function createMatch() {
+            const white = document.getElementById('whitePlayer').value;
+            const black = document.getElementById('blackPlayer').value;
+            const date = document.getElementById('matchDate').value;
             
-            // If odd number of players, add a "bye"
-            if (playerList.length % 2 !== 0) {
-                playerList.push('BYE');
+            if (!white || !black) {
+                alert('Bitte beide Spieler auswählen!');
+                return;
             }
-
-            const n = playerList.length;
-            const halfSize = n / 2;
-
-            // Generate pairings for this round
-            const roundPairings = [];
-            const roundIndex = (round - 1) % (n - 1);
             
-            // Rotate players (keeping first player fixed for round-robin)
-            const rotatedPlayers = [playerList[0]];
-            for (let i = 0; i < n - 1; i++) {
-                const idx = (i + roundIndex) % (n - 1);
-                rotatedPlayers.push(playerList[idx + 1]);
+            if (white === black) {
+                alert('Spieler können nicht gegen sich selbst spielen!');
+                return;
             }
-
-            // Create matches
-            for (let i = 0; i < halfSize; i++) {
-                const p1 = rotatedPlayers[i];
-                const p2 = rotatedPlayers[n - 1 - i];
-                
-                if (p1 !== 'BYE' && p2 !== 'BYE') {
-                    roundPairings.push({
-                        round: round,
-                        player1: p1,
-                        player2: p2,
-                        result: null
-                    });
-                }
-            }
-
-            matches.push(...roundPairings);
+            
+            const newMatch = {
+                id: matches.length + 1,
+                player1: white,
+                player2: black,
+                result: null,
+                date: date || new Date().toISOString().split('T')[0],
+                round: Math.ceil((matches.length + 1) / (players.length / 2))
+            };
+            
+            matches.push(newMatch);
             saveData();
             updateUI();
+            alert('Match wurde erstellt!');
         }
 
         // Update match result
@@ -823,6 +1079,18 @@
 
         // Update UI
         function updateUI() {
+            // Update player dropdowns
+            const whiteSelect = document.getElementById('whitePlayer');
+            const blackSelect = document.getElementById('blackPlayer');
+            if (whiteSelect && blackSelect) {
+                whiteSelect.innerHTML = '<option value="">Weiß wählen</option>';
+                blackSelect.innerHTML = '<option value="">Schwarz wählen</option>';
+                players.forEach(p => {
+                    whiteSelect.innerHTML += `<option value="${p.name}">${p.name}</option>`;
+                    blackSelect.innerHTML += `<option value="${p.name}">${p.name}</option>`;
+                });
+            }
+
             // Update news
             const newsList = document.getElementById('newsList');
             if (newsItems.length === 0) {
@@ -857,16 +1125,18 @@
 
             // Update player list
             const playerListDiv = document.getElementById('playerList');
-            playerListDiv.innerHTML = '';
-            players.forEach(player => {
-                const playerDiv = document.createElement('div');
-                playerDiv.className = 'player-item';
-                playerDiv.innerHTML = `
-                    <span>${player.name}</span>
-                    ${isAdmin ? `<button class="btn btn-danger" style="padding: 6px 12px; font-size: 0.9rem;" onclick="removePlayer('${player.name}')">Löschen</button>` : ''}
-                `;
-                playerListDiv.appendChild(playerDiv);
-            });
+            if (playerListDiv) {
+                playerListDiv.innerHTML = '';
+                players.forEach(player => {
+                    const playerDiv = document.createElement('div');
+                    playerDiv.className = 'player-item';
+                    playerDiv.innerHTML = `
+                        <span>${player.name}</span>
+                        ${isAdmin ? `<button class="btn btn-danger" style="padding: 6px 12px; font-size: 0.9rem;" onclick="removePlayer('${player.name}')">Löschen</button>` : ''}
+                    `;
+                    playerListDiv.appendChild(playerDiv);
+                });
+            }
 
             // Update standings
             const standingsTable = document.getElementById('standingsTable');
@@ -886,24 +1156,15 @@
                 standingsTable.appendChild(row);
             });
 
-            // Update matches
+            // Update current matches
             const matchesList = document.getElementById('matchesList');
-            matchesList.innerHTML = '';
+            const currentMatches = matches.filter(m => !m.result);
             
-            const matchesByRound = {};
-            matches.forEach(match => {
-                if (!matchesByRound[match.round]) {
-                    matchesByRound[match.round] = [];
-                }
-                matchesByRound[match.round].push(match);
-            });
-
-            Object.keys(matchesByRound).sort((a, b) => b - a).forEach(round => {
-                const roundDiv = document.createElement('div');
-                roundDiv.style.marginBottom = '25px';
-                roundDiv.innerHTML = `<h3 style="color: var(--primary-red); margin-bottom: 15px; font-family: 'Libre Baskerville', serif; font-size: 1.5rem; font-weight: 700; letter-spacing: 2px;">Spieltag ${round}</h3>`;
-                
-                matchesByRound[round].forEach((match, idx) => {
+            if (currentMatches.length === 0) {
+                matchesList.innerHTML = '<p style="color: var(--light-gray);">Noch keine Spielpaarungen vorhanden.</p>';
+            } else {
+                matchesList.innerHTML = '';
+                currentMatches.forEach(match => {
                     const matchDiv = document.createElement('div');
                     matchDiv.className = 'match';
                     const globalIndex = matches.indexOf(match);
@@ -913,19 +1174,60 @@
                             <span>${match.player1}</span>
                             <span class="match-vs">VS</span>
                             <span>${match.player2}</span>
+                            <span class="match-date">${match.date || ''}</span>
                         </div>
                         <select class="result-select" onchange="updateMatchResult(${globalIndex}, this.value)" ${!isAdmin ? 'disabled' : ''}>
                             <option value="">Ergebnis wählen</option>
-                            <option value="1-0" ${match.result === '1-0' ? 'selected' : ''}>1-0 (${match.player1} gewinnt)</option>
-                            <option value="0.5-0.5" ${match.result === '0.5-0.5' ? 'selected' : ''}>0.5-0.5 (Unentschieden)</option>
-                            <option value="0-1" ${match.result === '0-1' ? 'selected' : ''}>0-1 (${match.player2} gewinnt)</option>
+                            <option value="1-0">1-0 (${match.player1} gewinnt)</option>
+                            <option value="0.5-0.5">0.5-0.5 (Unentschieden)</option>
+                            <option value="0-1">0-1 (${match.player2} gewinnt)</option>
                         </select>
                     `;
-                    roundDiv.appendChild(matchDiv);
+                    matchesList.appendChild(matchDiv);
                 });
+            }
+
+            // Update past matches
+            const pastMatchesList = document.getElementById('pastMatchesList');
+            const completedMatches = matches.filter(m => m.result);
+            
+            if (completedMatches.length === 0) {
+                pastMatchesList.innerHTML = '<p style="color: var(--light-gray);">Noch keine abgeschlossenen Matches.</p>';
+            } else {
+                pastMatchesList.innerHTML = '';
                 
-                matchesList.appendChild(roundDiv);
-            });
+                // Sort by date (newest first)
+                completedMatches.sort((a, b) => {
+                    const dateA = new Date(a.date || '2000-01-01');
+                    const dateB = new Date(b.date || '2000-01-01');
+                    return dateB - dateA;
+                });
+
+                completedMatches.forEach(match => {
+                    const matchDiv = document.createElement('div');
+                    matchDiv.className = 'past-match';
+                    
+                    let resultDisplay = '';
+                    if (match.result === '1-0') {
+                        resultDisplay = `<span class="match-result">${match.player1} gewinnt (1-0)</span>`;
+                    } else if (match.result === '0-1') {
+                        resultDisplay = `<span class="match-result">${match.player2} gewinnt (0-1)</span>`;
+                    } else if (match.result === '0.5-0.5') {
+                        resultDisplay = `<span class="match-result">Unentschieden (0.5-0.5)</span>`;
+                    }
+                    
+                    matchDiv.innerHTML = `
+                        <div class="match-players">
+                            <span>${match.player1}</span>
+                            <span class="match-vs">VS</span>
+                            <span>${match.player2}</span>
+                            <span class="match-date">${match.date || ''}</span>
+                        </div>
+                        ${resultDisplay}
+                    `;
+                    pastMatchesList.appendChild(matchDiv);
+                });
+            }
 
             // Update playoffs
             if (playoffMatches.length > 0) {
@@ -980,7 +1282,7 @@
 
         // Initialize on page load
         window.onload = function() {
-            loadData();
+            loadDataFromJSON();
         };
     </script>
 </body>
