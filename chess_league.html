@@ -376,63 +376,6 @@
             font-size: 1.3rem;
         }
 
-        .past-match {
-            background: var(--light-gray);
-            border-radius: 8px;
-            padding: 15px 20px;
-            margin-bottom: 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            transition: all 0.3s ease;
-            border-left: 3px solid var(--primary-red);
-        }
-
-        .past-match:hover {
-            background: rgba(227, 30, 36, 0.1);
-            transform: translateX(5px);
-        }
-
-        .past-match-info {
-            display: flex;
-            gap: 20px;
-            align-items: center;
-            flex: 1;
-        }
-
-        .past-match-round {
-            font-size: 0.9rem;
-            color: var(--primary-red);
-            font-weight: 700;
-            min-width: 100px;
-        }
-
-        .past-match-players {
-            font-size: 1.1rem;
-            flex: 1;
-        }
-
-        .past-match-winner {
-            color: var(--white);
-            font-weight: 700;
-        }
-
-        .past-match-loser {
-            color: #666;
-        }
-
-        .past-match-result {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: var(--primary-red);
-            min-width: 80px;
-            text-align: right;
-        }
-
-        .past-match-draw {
-            color: #aaa;
-        }
-
         @media (max-width: 768px) {
             .title {
                 font-size: 2rem;
@@ -548,12 +491,6 @@
             <div id="matchesList"></div>
         </div>
 
-        <!-- Past Matches -->
-        <div class="section">
-            <h2 class="section-title">Vergangene Matches</h2>
-            <div id="pastMatchesList"></div>
-        </div>
-
         <!-- Playoffs -->
         <div class="section">
             <h2 class="section-title">Playoffs</h2>
@@ -573,11 +510,11 @@
         </div>
 
         <div class="contact">
-            <p>Kontakt: <a href="/cdn-cgi/l/email-protection#582b39363c3d2a18312b75363d2d2b2c393c2c763c3d"><span class="__cf_email__" data-cfemail="cebdafa0aaabbc8ea7bde3a0abbbbdbaafaabae0aaab">[email&#160;protected]</span></a></p>
+            <p>Kontakt: <a href="mailto:sander@is-neustadt.de">sander@is-neustadt.de</a></p>
         </div>
     </div>
 
-    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+    <script>
         // Admin password (in production, this should be handled server-side)
         const ADMIN_PASSWORD = '5082';
 
@@ -990,56 +927,6 @@
                 matchesList.appendChild(roundDiv);
             });
 
-            // Update past matches (completed matches)
-            const pastMatchesList = document.getElementById('pastMatchesList');
-            const completedMatches = matches.filter(match => match.result);
-            
-            if (completedMatches.length === 0) {
-                pastMatchesList.innerHTML = '<p style="color: var(--light-gray);">Noch keine abgeschlossenen Matches.</p>';
-            } else {
-                pastMatchesList.innerHTML = '';
-                
-                // Sort by round (newest first)
-                const sortedCompleted = [...completedMatches].sort((a, b) => b.round - a.round);
-                
-                sortedCompleted.forEach(match => {
-                    const matchDiv = document.createElement('div');
-                    matchDiv.className = 'past-match';
-                    
-                    let resultDisplay = '';
-                    let player1Class = '';
-                    let player2Class = '';
-                    
-                    if (match.result === '1-0') {
-                        resultDisplay = '1-0';
-                        player1Class = 'past-match-winner';
-                        player2Class = 'past-match-loser';
-                    } else if (match.result === '0-1') {
-                        resultDisplay = '0-1';
-                        player1Class = 'past-match-loser';
-                        player2Class = 'past-match-winner';
-                    } else {
-                        resultDisplay = '½-½';
-                        player1Class = 'past-match-draw';
-                        player2Class = 'past-match-draw';
-                    }
-                    
-                    matchDiv.innerHTML = `
-                        <div class="past-match-info">
-                            <div class="past-match-round">Spieltag ${match.round}</div>
-                            <div class="past-match-players">
-                                <span class="${player1Class}">${match.player1}</span>
-                                <span style="color: var(--primary-red); margin: 0 10px;">vs</span>
-                                <span class="${player2Class}">${match.player2}</span>
-                            </div>
-                        </div>
-                        <div class="past-match-result ${match.result === '0.5-0.5' ? 'past-match-draw' : ''}">${resultDisplay}</div>
-                    `;
-                    
-                    pastMatchesList.appendChild(matchDiv);
-                });
-            }
-
             // Update playoffs
             if (playoffMatches.length > 0) {
                 const semi1 = playoffMatches.find(m => m.id === 'semi1');
@@ -1085,4 +972,16 @@
                                 <option value="${final.player2}" ${final.winner === final.player2 ? 'selected' : ''}>${final.player2}</option>
                             </select>
                         ` : ''}
-                        ${final.winner ? `<div style="margin-top: 20px; font-size: 2rem; font-family: 'Libre Baskerville', serif; font-weight: 700; color: var(--white);">🏆 
+                        ${final.winner ? `<div style="margin-top: 20px; font-size: 2rem; font-family: 'Libre Baskerville', serif; font-weight: 700; color: var(--white);">🏆 Champion: ${final.winner} 🏆</div>` : ''}
+                    `;
+                }
+            }
+        }
+
+        // Initialize on page load
+        window.onload = function() {
+            loadData();
+        };
+    </script>
+</body>
+</html>
