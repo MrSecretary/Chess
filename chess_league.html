@@ -37,7 +37,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background-image: url('/mnt/user-data/uploads/Logo_2.png');
+            background-image: url('Logo_2.png');
             background-position: center center;
             background-repeat: no-repeat;
             background-size: 60%;
@@ -71,6 +71,9 @@
             text-align: center;
             padding: 40px 20px;
             position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         .title {
@@ -84,6 +87,13 @@
             -webkit-text-fill-color: transparent;
             background-clip: text;
             animation: titleGlow 2s ease-in-out infinite alternate;
+        }
+
+        .logout-btn {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
         }
 
         @keyframes titleGlow {
@@ -163,7 +173,8 @@
         input[type="text"],
         input[type="password"],
         input[type="number"],
-        select {
+        select,
+        textarea {
             width: 100%;
             padding: 12px;
             margin: 8px 0;
@@ -175,8 +186,14 @@
             font-size: 1rem;
         }
 
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
         input:focus,
-        select:focus {
+        select:focus,
+        textarea:focus {
             outline: none;
             border-color: var(--white);
             box-shadow: 0 0 10px rgba(227, 30, 36, 0.4);
@@ -196,7 +213,7 @@
             font-family: 'Libre Baskerville', serif;
             font-size: 1.2rem;
             font-weight: 700;
-            letter-spacing: 2px;
+            letter-spacing: 1px;
         }
 
         td {
@@ -318,9 +335,60 @@
             color: var(--white);
         }
 
+        .news-item {
+            background: var(--light-gray);
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 6px;
+            border-left: 3px solid var(--primary-red);
+        }
+
+        .news-date {
+            color: var(--primary-red);
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .rules-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .rules-list li {
+            background: var(--light-gray);
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 6px;
+            border-left: 3px solid var(--primary-red);
+            position: relative;
+            padding-left: 50px;
+        }
+
+        .rules-list li:before {
+            content: attr(data-number);
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--primary-red);
+            font-weight: 700;
+            font-size: 1.3rem;
+        }
+
         @media (max-width: 768px) {
             .title {
                 font-size: 2rem;
+            }
+
+            .logout-btn {
+                position: static;
+                transform: none;
+                margin-top: 20px;
+            }
+
+            .header {
+                flex-direction: column;
             }
 
             .playoff-bracket {
@@ -338,6 +406,7 @@
     <div class="container">
         <div class="header">
             <h1 class="title">ISN Chess League</h1>
+            <button class="btn btn-danger logout-btn hidden" id="logoutBtn" onclick="logout()">Abmelden</button>
         </div>
 
         <!-- Admin Login -->
@@ -347,6 +416,37 @@
                 <input type="password" id="passwordInput" placeholder="Admin-Passwort eingeben">
                 <button class="btn" onclick="login()">Anmelden</button>
             </div>
+        </div>
+
+        <!-- News/Announcements Section -->
+        <div class="section">
+            <h2 class="section-title">📢 News & Ankündigungen</h2>
+            <div id="adminNewsPanel" class="hidden" style="margin-bottom: 20px;">
+                <h3 style="color: var(--primary-red); margin-bottom: 15px; font-size: 1.2rem;">Neue Ankündigung erstellen</h3>
+                <input type="text" id="newsTitle" placeholder="Titel der Ankündigung">
+                <textarea id="newsContent" placeholder="Inhalt der Ankündigung"></textarea>
+                <button class="btn" onclick="addNews()">Ankündigung hinzufügen</button>
+            </div>
+            <div id="newsList">
+                <p style="color: var(--light-gray);">Noch keine Ankündigungen vorhanden.</p>
+            </div>
+        </div>
+
+        <!-- Rules Section -->
+        <div class="section">
+            <h2 class="section-title">📋 Turnierregeln</h2>
+            <div id="adminRulesPanel" class="hidden" style="margin-bottom: 20px;">
+                <h3 style="color: var(--primary-red); margin-bottom: 15px; font-size: 1.2rem;">Neue Regel hinzufügen</h3>
+                <textarea id="newRule" placeholder="Regel eingeben"></textarea>
+                <button class="btn" onclick="addRule()">Regel hinzufügen</button>
+            </div>
+            <ul class="rules-list" id="rulesList">
+                <li data-number="1">Jeder Spieler spielt gegen jeden anderen Spieler genau einmal.</li>
+                <li data-number="2">Sieg = 1 Punkt, Remis = 0,5 Punkte, Niederlage = 0 Punkte.</li>
+                <li data-number="3">Bedenkzeit: 15 Minuten pro Spieler mit 10 Sekunden Inkrement.</li>
+                <li data-number="4">Die Top 4 Spieler qualifizieren sich für die Playoffs.</li>
+                <li data-number="5">Bei Punktgleichheit entscheidet das direkte Duell.</li>
+            </ul>
         </div>
 
         <!-- Admin Panel -->
@@ -410,7 +510,7 @@
         </div>
 
         <div class="contact">
-            <p>Kontakt: <a href="mailto:f.frembs@is-neustadt.de">f.frembs@is-neustadt.de</a></p>
+            <p>Kontakt: <a href="mailto:sander@is-neustadt.de">sander@is-neustadt.de</a></p>
         </div>
     </div>
 
@@ -422,14 +522,26 @@
         let players = [];
         let matches = [];
         let playoffMatches = [];
+        let newsItems = [];
+        let rules = [
+            'Jeder Spieler spielt gegen jeden anderen Spieler genau einmal.',
+            'Sieg = 1 Punkt, Remis = 0,5 Punkte, Niederlage = 0 Punkte.',
+            'Bedenkzeit: 15 Minuten pro Spieler mit 10 Sekunden Inkrement.',
+            'Die Top 4 Spieler qualifizieren sich für die Playoffs.',
+            'Bei Punktgleichheit entscheidet das direkte Duell.'
+        ];
 
         // Load data from localStorage
         function loadData() {
             const savedPlayers = localStorage.getItem('chessPlayers');
             const savedMatches = localStorage.getItem('chessMatches');
+            const savedNews = localStorage.getItem('chessNews');
+            const savedRules = localStorage.getItem('chessRules');
             
             if (savedPlayers) players = JSON.parse(savedPlayers);
             if (savedMatches) matches = JSON.parse(savedMatches);
+            if (savedNews) newsItems = JSON.parse(savedNews);
+            if (savedRules) rules = JSON.parse(savedRules);
             
             updateUI();
         }
@@ -438,6 +550,8 @@
         function saveData() {
             localStorage.setItem('chessPlayers', JSON.stringify(players));
             localStorage.setItem('chessMatches', JSON.stringify(matches));
+            localStorage.setItem('chessNews', JSON.stringify(newsItems));
+            localStorage.setItem('chessRules', JSON.stringify(rules));
         }
 
         // Login function
@@ -447,34 +561,104 @@
                 isAdmin = true;
                 document.getElementById('loginSection').classList.add('hidden');
                 document.getElementById('adminPanel').classList.remove('hidden');
+                document.getElementById('adminNewsPanel').classList.remove('hidden');
+                document.getElementById('adminRulesPanel').classList.remove('hidden');
+                document.getElementById('logoutBtn').classList.remove('hidden');
+                updateUI();
                 alert('Erfolgreich angemeldet!');
             } else {
                 alert('Falsches Passwort!');
             }
         }
 
-        // Add player
-        function addPlayer() {
-            const name = document.getElementById('newPlayerName').value.trim();
-            if (!name) {
-                alert('Bitte einen Spielernamen eingeben!');
-                return;
-            }
+        // Logout function
+        function logout() {
+            isAdmin = false;
+            document.getElementById('loginSection').classList.remove('hidden');
+            document.getElementById('adminPanel').classList.add('hidden');
+            document.getElementById('adminNewsPanel').classList.add('hidden');
+            document.getElementById('adminRulesPanel').classList.add('hidden');
+            document.getElementById('logoutBtn').classList.add('hidden');
+            document.getElementById('passwordInput').value = '';
+            updateUI();
+        }
+
+        // Add news item
+        function addNews() {
+            const title = document.getElementById('newsTitle').value.trim();
+            const content = document.getElementById('newsContent').value.trim();
             
-            if (players.find(p => p.name === name)) {
-                alert('Dieser Spieler existiert bereits!');
+            if (!title || !content) {
+                alert('Bitte füllen Sie Titel und Inhalt aus!');
                 return;
             }
 
+            const newsItem = {
+                id: Date.now(),
+                title: title,
+                content: content,
+                date: new Date().toLocaleDateString('de-DE')
+            };
+
+            newsItems.unshift(newsItem); // Add to beginning of array
+            document.getElementById('newsTitle').value = '';
+            document.getElementById('newsContent').value = '';
+            saveData();
+            updateUI();
+        }
+
+        // Delete news item
+        function deleteNews(id) {
+            if (confirm('Möchten Sie diese Ankündigung wirklich löschen?')) {
+                newsItems = newsItems.filter(item => item.id !== id);
+                saveData();
+                updateUI();
+            }
+        }
+
+        // Add rule
+        function addRule() {
+            const ruleText = document.getElementById('newRule').value.trim();
+            
+            if (!ruleText) {
+                alert('Bitte geben Sie eine Regel ein!');
+                return;
+            }
+
+            rules.push(ruleText);
+            document.getElementById('newRule').value = '';
+            saveData();
+            updateUI();
+        }
+
+        // Delete rule
+        function deleteRule(index) {
+            if (confirm('Möchten Sie diese Regel wirklich löschen?')) {
+                rules.splice(index, 1);
+                saveData();
+                updateUI();
+            }
+        }
+
+        // Add player
+        function addPlayer() {
+            const playerName = document.getElementById('newPlayerName').value.trim();
+            if (!playerName) {
+                alert('Bitte Namen eingeben!');
+                return;
+            }
+            if (players.find(p => p.name === playerName)) {
+                alert('Spieler existiert bereits!');
+                return;
+            }
             players.push({
-                name: name,
+                name: playerName,
                 wins: 0,
                 draws: 0,
                 losses: 0,
                 points: 0,
                 games: 0
             });
-
             document.getElementById('newPlayerName').value = '';
             saveData();
             updateUI();
@@ -484,59 +668,79 @@
         function removePlayer(playerName) {
             if (confirm(`Möchten Sie ${playerName} wirklich löschen?`)) {
                 players = players.filter(p => p.name !== playerName);
+                matches = matches.filter(m => m.player1 !== playerName && m.player2 !== playerName);
                 saveData();
                 updateUI();
             }
         }
 
-        // Generate matches using Swiss-system pairing
+        // Generate matches using round-robin
         function generateMatches() {
-            const roundNum = document.getElementById('roundNumber').value;
-            if (!roundNum || players.length < 2) {
-                alert('Bitte eine Spieltag-Nummer eingeben und mindestens 2 Spieler haben!');
+            const round = parseInt(document.getElementById('roundNumber').value);
+            if (!round || round < 1) {
+                alert('Bitte gültige Spieltag-Nummer eingeben!');
                 return;
             }
 
-            // Sort players by points (for Swiss system)
-            const sortedPlayers = [...players].sort((a, b) => b.points - a.points);
-            
-            const newMatches = [];
-            const paired = new Set();
+            if (players.length < 2) {
+                alert('Mindestens 2 Spieler benötigt!');
+                return;
+            }
 
-            for (let i = 0; i < sortedPlayers.length; i++) {
-                if (paired.has(sortedPlayers[i].name)) continue;
+            // Check if round already exists
+            if (matches.some(m => m.round === round)) {
+                alert('Dieser Spieltag existiert bereits!');
+                return;
+            }
+
+            let playerList = [...players.map(p => p.name)];
+            
+            // If odd number of players, add a "bye"
+            if (playerList.length % 2 !== 0) {
+                playerList.push('BYE');
+            }
+
+            const n = playerList.length;
+            const halfSize = n / 2;
+
+            // Generate pairings for this round
+            const roundPairings = [];
+            const roundIndex = (round - 1) % (n - 1);
+            
+            // Rotate players (keeping first player fixed for round-robin)
+            const rotatedPlayers = [playerList[0]];
+            for (let i = 0; i < n - 1; i++) {
+                const idx = (i + roundIndex) % (n - 1);
+                rotatedPlayers.push(playerList[idx + 1]);
+            }
+
+            // Create matches
+            for (let i = 0; i < halfSize; i++) {
+                const p1 = rotatedPlayers[i];
+                const p2 = rotatedPlayers[n - 1 - i];
                 
-                for (let j = i + 1; j < sortedPlayers.length; j++) {
-                    if (paired.has(sortedPlayers[j].name)) continue;
-                    
-                    newMatches.push({
-                        round: parseInt(roundNum),
-                        player1: sortedPlayers[i].name,
-                        player2: sortedPlayers[j].name,
+                if (p1 !== 'BYE' && p2 !== 'BYE') {
+                    roundPairings.push({
+                        round: round,
+                        player1: p1,
+                        player2: p2,
                         result: null
                     });
-                    
-                    paired.add(sortedPlayers[i].name);
-                    paired.add(sortedPlayers[j].name);
-                    break;
                 }
             }
 
-            matches.push(...newMatches);
+            matches.push(...roundPairings);
             saveData();
             updateUI();
-            alert(`${newMatches.length} Paarungen für Spieltag ${roundNum} erstellt!`);
         }
 
         // Update match result
         function updateMatchResult(matchIndex, result) {
             const match = matches[matchIndex];
-            if (!match) return;
-
             const player1 = players.find(p => p.name === match.player1);
             const player2 = players.find(p => p.name === match.player2);
 
-            // Remove previous result if exists
+            // Revert old result
             if (match.result) {
                 if (match.result === '1-0') {
                     player1.wins--;
@@ -619,6 +823,38 @@
 
         // Update UI
         function updateUI() {
+            // Update news
+            const newsList = document.getElementById('newsList');
+            if (newsItems.length === 0) {
+                newsList.innerHTML = '<p style="color: var(--light-gray);">Noch keine Ankündigungen vorhanden.</p>';
+            } else {
+                newsList.innerHTML = '';
+                newsItems.forEach(item => {
+                    const newsDiv = document.createElement('div');
+                    newsDiv.className = 'news-item';
+                    newsDiv.innerHTML = `
+                        <div class="news-date">${item.date}</div>
+                        <h3 style="color: var(--primary-red); margin-bottom: 10px; font-size: 1.3rem;">${item.title}</h3>
+                        <p>${item.content}</p>
+                        ${isAdmin ? `<button class="btn btn-danger" style="margin-top: 10px; padding: 6px 12px; font-size: 0.9rem;" onclick="deleteNews(${item.id})">Löschen</button>` : ''}
+                    `;
+                    newsList.appendChild(newsDiv);
+                });
+            }
+
+            // Update rules
+            const rulesList = document.getElementById('rulesList');
+            rulesList.innerHTML = '';
+            rules.forEach((rule, index) => {
+                const li = document.createElement('li');
+                li.setAttribute('data-number', index + 1);
+                li.innerHTML = `
+                    ${rule}
+                    ${isAdmin ? `<button class="btn btn-danger" style="margin-left: 15px; padding: 6px 12px; font-size: 0.9rem;" onclick="deleteRule(${index})">Löschen</button>` : ''}
+                `;
+                rulesList.appendChild(li);
+            });
+
             // Update player list
             const playerListDiv = document.getElementById('playerList');
             playerListDiv.innerHTML = '';
@@ -736,14 +972,16 @@
                                 <option value="${final.player2}" ${final.winner === final.player2 ? 'selected' : ''}>${final.player2}</option>
                             </select>
                         ` : ''}
-                        ${final.winner ? `<div style="margin-top: 20px; font-size: 2rem; font-family: 'Libre Baskerville', serif; font-weight: 700; letter-spacing: 3px;">🏆 Champion: ${final.winner} 🏆</div>` : ''}
+                        ${final.winner ? `<div style="margin-top: 20px; font-size: 2rem; font-family: 'Libre Baskerville', serif; font-weight: 700; color: var(--white);">🏆 Champion: ${final.winner} 🏆</div>` : ''}
                     `;
                 }
             }
         }
 
-        // Initialize
-        loadData();
+        // Initialize on page load
+        window.onload = function() {
+            loadData();
+        };
     </script>
 </body>
 </html>
