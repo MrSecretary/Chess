@@ -4,30 +4,39 @@
 <meta charset="UTF-8">
 <title>Turnierverwaltung</title>
 <style>
-body { font-family: Arial; background:#000;color:#fff; margin:0; padding:0;}
-header { background:#c0392b; padding:10px; display:flex; align-items:center;}
-header img { height:50px; margin-right:20px;}
-header h1 { margin:0; }
-nav button { margin-left:10px; padding:5px 10px; cursor:pointer; }
-section { padding:20px;}
-textarea, input[type=text] { width:100%; }
-table { width:100%; border-collapse: collapse; margin-top:10px;}
+body { font-family: Arial, sans-serif; margin:0; padding:0; background:#000; color:#fff;}
+header { background:#c0392b; display:flex; align-items:center; padding:10px; justify-content:space-between; }
+header img { height:50px; margin-right:20px; border-radius:6px; }
+header h1 { margin:0; font-size:24px; color:#fff; }
+nav button { margin-left:5px; padding:6px 12px; background:#fff; color:#c0392b; border:none; border-radius:4px; cursor:pointer; font-weight:bold;}
+nav button:hover { background:#e74c3c; color:#fff; }
+section { padding:20px; max-width:1200px; margin:auto; }
+textarea, input[type=text], input[type=password] { width:100%; padding:6px; border-radius:4px; border:none; margin-top:5px; }
+table { width:100%; border-collapse: collapse; margin-top:10px; background:#111; color:#fff; }
 table, th, td { border:1px solid #fff; text-align:center; }
-th, td { padding:8px; }
-button { padding:5px 10px; margin-top:5px; cursor:pointer;}
-#logoutBtn { background:#fff; color:#c0392b; border:none;}
+th { background:#c0392b; }
+td { padding:6px; }
+button { padding:6px 12px; margin-top:5px; border:none; border-radius:4px; cursor:pointer; font-weight:bold;}
+button:hover { opacity:0.8; }
+#logoutBtn { background:#fff; color:#c0392b; }
+#logoPreview { max-height:50px; border:2px solid #fff; padding:2px; border-radius:4px; }
+h2 { color:#e74c3c; margin-top:0; }
+#newsDisplay, #playoffsDisplay, #rulesDisplay { background:#111; padding:10px; border-radius:6px; margin-top:10px; }
 </style>
 </head>
 <body>
 
 <header>
-    <img id="logoPreview" src="" alt="Logo">
-    <h1>Turnierverwaltung</h1>
+    <div style="display:flex; align-items:center;">
+        <img id="logoPreview" src="" alt="Logo">
+        <h1>Turnierverwaltung</h1>
+    </div>
     <nav id="adminNav" style="display:none;">
         <button onclick="showSection('news')">News</button>
         <button onclick="showSection('players')">Tabelle</button>
         <button onclick="showSection('matches')">Matches</button>
         <button onclick="showSection('playoffs')">Playoffs</button>
+        <button onclick="showSection('rules')">Turnierregeln</button>
         <button id="logoutBtn" onclick="logout()">Logout</button>
     </nav>
 </header>
@@ -40,9 +49,9 @@ button { padding:5px 10px; margin-top:5px; cursor:pointer;}
 
 <section id="newsSection" style="display:none;">
     <h2>News & Ankündigungen</h2>
-    <textarea id="newsEditor" rows="5"></textarea><br>
+    <textarea id="newsEditor" rows="5"></textarea>
     <button onclick="saveNews()">Speichern</button>
-    <div id="newsDisplay" style="margin-top:10px;"></div>
+    <div id="newsDisplay"></div>
 </section>
 
 <section id="playersSection" style="display:none;">
@@ -80,21 +89,29 @@ button { padding:5px 10px; margin-top:5px; cursor:pointer;}
 <section id="playoffsSection" style="display:none;">
     <h2>Playoffs</h2>
     <button onclick="generatePlayoffs()">Playoffs starten</button>
-    <div id="playoffsDisplay" style="margin-top:10px;"></div>
+    <div id="playoffsDisplay"></div>
+</section>
+
+<section id="rulesSection" style="display:none;">
+    <h2>Turnierregeln</h2>
+    <textarea id="rulesEditor" rows="6" placeholder="Hier die Turnierregeln eingeben..."></textarea>
+    <button onclick="saveRules()">Speichern</button>
+    <div id="rulesDisplay"></div>
 </section>
 
 <section>
     <h2>Kontakt</h2>
-    <p>Email: <a href="mailto:f.frembs@is-neustadt.de">f.frembs@is-neustadt.de</a></p>
+    <p>Email: <a href="mailto:f.frembs@is-neustadt.de" style="color:#e74c3c;">f.frembs@is-neustadt.de</a></p>
     <input type="file" id="logoUpload">
 </section>
 
+<!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-storage-compat.js"></script>
 
 <script>
-// Firebase konfigurieren
+// ------------------- Firebase konfigurieren -------------------
 const firebaseConfig = {
     apiKey: "DEINE_API_KEY",
     authDomain: "deinprojekt.firebaseapp.com",
@@ -103,11 +120,11 @@ const firebaseConfig = {
     messagingSenderId: "XXX",
     appId: "XXX"
 };
-
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 const storage = firebase.storage();
 
+// ------------------- Admin Login -------------------
 const ADMIN_PASSWORD = "5082";
 
 function login(){
@@ -119,19 +136,18 @@ function login(){
         loadNews();
         loadPlayers();
         loadMatches();
+        loadRules();
     } else { alert("Falsches Passwort"); }
 }
-
 function logout(){ localStorage.removeItem("loggedIn"); location.reload(); }
 if(localStorage.getItem("loggedIn")==="true"){ login(); }
-
 function showSection(id){
-    ['news','players','matches','playoffs'].forEach(s=>{
+    ['news','players','matches','playoffs','rules'].forEach(s=>{
         document.getElementById(s+'Section').style.display = (s===id)?'block':'none';
     });
 }
 
-// --- News ---
+// ------------------- News -------------------
 async function saveNews(){
     const content = document.getElementById("newsEditor").value;
     await db.collection('news').doc('main').set({content});
@@ -145,19 +161,19 @@ async function loadNews(){
     } else { document.getElementById("newsDisplay").innerHTML="Noch keine News."; }
 }
 
-// --- Spieler Tabelle ---
+// ------------------- Spieler Tabelle -------------------
 async function loadPlayers(){
     const snapshot = await db.collection('players').get();
     const tbody = document.querySelector('#playersTable tbody');
     tbody.innerHTML="";
     let players = [];
-    snapshot.forEach(doc=>players.push({...doc.data(), id:doc.id}));
-    // Punkte berechnen
-    players.forEach(p=>{
+    snapshot.forEach(doc=>{
+        let p = doc.data();
+        p.id = doc.id;
         p.spiele = p.siege + p.unentschieden + p.niederlagen;
-        p.punkte = p.siege*1 + p.unentschieden*0.5;
+        p.punkte = p.siege + 0.5*p.unentschieden;
+        players.push(p);
     });
-    // Rang sortieren
     players.sort((a,b)=>b.punkte-a.punkte);
     players.forEach((p,i)=>{
         const tr=document.createElement('tr');
@@ -179,24 +195,34 @@ async function addPlayer(){
     loadPlayers();
 }
 
-// --- Matches ---
+// ------------------- Matches -------------------
 async function generateMatches(){
     const snapshot = await db.collection('players').get();
-    let players=[];
-    snapshot.forEach(doc=>players.push(doc.id));
+    let players = [];
+    snapshot.forEach(doc=>{
+        let p = doc.data();
+        p.id = doc.id;
+        players.push(p);
+    });
+    players = players.sort(()=>0.5 - Math.random());
     let pairs=[];
     for(let i=0;i<players.length;i+=2){
         if(players[i+1]) pairs.push([players[i],players[i+1]]);
     }
-    // Zufälliges Ergebnis
-    pairs.forEach(async p=>{
-        let r=Math.random();
+    for(let p of pairs){
         let result;
-        if(r<0.45){ result='Sieg Spieler1'; await updateScore(p[0],'sieg'); await updateScore(p[1],'niederlage'); }
-        else if(r<0.9){ result='Sieg Spieler2'; await updateScore(p[1],'sieg'); await updateScore(p[0],'niederlage'); }
-        else{ result='Unentschieden'; await updateScore(p[0],'unentschieden'); await updateScore(p[1],'unentschieden'); }
-        await db.collection('matches').add({spieler1:p[0],spieler2:p[1],result,resultText:result,date:new Date()});
-    });
+        let r = Math.random();
+        if(r<0.45){ result=`${p[0].name} gewinnt`; await updateScore(p[0].id,'sieg'); await updateScore(p[1].id,'niederlage'); }
+        else if(r<0.9){ result=`${p[1].name} gewinnt`; await updateScore(p[1].id,'sieg'); await updateScore(p[0].id,'niederlage'); }
+        else{ result="Unentschieden"; await updateScore(p[0].id,'unentschieden'); await updateScore(p[1].id,'unentschieden'); }
+        await db.collection('matches').add({
+            spieler1Name:p[0].name,
+            spieler2Name:p[1].name,
+            resultText: result,
+            date: new Date()
+        });
+    }
+    loadPlayers();
     loadMatches();
 }
 
@@ -207,12 +233,11 @@ async function loadMatches(){
     snapshot.forEach(doc=>{
         const data = doc.data();
         const tr=document.createElement('tr');
-        tr.innerHTML=`<td>${data.spieler1}</td><td>${data.spieler2}</td><td>${data.resultText}</td>`;
+        tr.innerHTML=`<td>${data.spieler1Name}</td><td>${data.spieler2Name}</td><td>${data.resultText}</td>`;
         tbody.appendChild(tr);
     });
 }
 
-// Spieler Punkte aktualisieren
 async function updateScore(playerId,type){
     const doc = await db.collection('players').doc(playerId).get();
     const data = doc.data();
@@ -220,25 +245,56 @@ async function updateScore(playerId,type){
     await db.collection('players').doc(playerId).set(data);
 }
 
-// --- Playoffs ---
+// ------------------- Playoffs -------------------
 async function generatePlayoffs(){
     const snapshot = await db.collection('players').get();
     let players=[];
-    snapshot.forEach(doc=>players.push({...doc.data(),id:doc.id}));
-    players.forEach(p=>p.punkte=p.siege+0.5*p.unentschieden);
+    snapshot.forEach(doc=>{
+        let data = doc.data();
+        data.id = doc.id;
+        data.punkte = data.siege + 0.5*data.unentschieden;
+        players.push(data);
+    });
     players.sort((a,b)=>b.punkte-a.punkte);
     let top4 = players.slice(0,4);
-    let semifinals = [[top4[0],top4[3]],[top4[1],top4[2]]];
-    let results="";
+    if(top4.length<4){ document.getElementById('playoffsDisplay').innerHTML="Nicht genug Spieler für Playoffs!"; return; }
+
+    let semifinals = [
+        {spieler1:top4[0], spieler2:top4[3]},
+        {spieler1:top4[1], spieler2:top4[2]}
+    ];
+
+    let results="<h3>Halbfinale</h3>";
+    let finalists=[];
     semifinals.forEach((match,i)=>{
-        let winner = Math.random()<0.5?match[0]:match[1];
-        results+=`Halbfinale ${i+1}: ${match[0].name} vs ${match[1].name} → Sieger: ${winner.name}<br>`;
+        let winner = Math.random()<0.5?match.spieler1:match.spieler2;
+        finalists.push(winner);
+        results+=`Halbfinale ${i+1}: ${match.spieler1.name} vs ${match.spieler2.name} → Sieger: <b>${winner.name}</b><br>`;
     });
-    document.getElementById('playoffsDisplay').innerHTML = results;
+
+    let finalWinner = Math.random()<0.5?finalists[0]:finalists[1];
+    results+="<h3>Finale</h3>";
+    results+=`${finalists[0].name} vs ${finalists[1].name} → Sieger: <b>${finalWinner.name}</b>`;
+    document.getElementById('playoffsDisplay').innerHTML=results;
 }
 
-// --- Logo Upload ---
-document.getElementById('logoUpload').addEventListener('change',async function(e){
+// ------------------- Turnierregeln -------------------
+async function saveRules(){
+    const content = document.getElementById('rulesEditor').value;
+    await db.collection('rules').doc('main').set({content});
+    loadRules();
+}
+
+async function loadRules(){
+    const doc = await db.collection('rules').doc('main').get();
+    if(doc.exists){
+        document.getElementById('rulesEditor').value = doc.data().content;
+        document.getElementById('rulesDisplay').innerHTML = doc.data().content.replace(/\n/g,'<br>');
+    } else { document.getElementById('rulesDisplay').innerHTML = "Noch keine Regeln hinterlegt."; }
+}
+
+// ------------------- Logo Upload -------------------
+document.getElementById('logoUpload').addEventListener('change', async function(e){
     const file = e.target.files[0];
     if(!file) return;
     const ref = storage.ref('logo/'+file.name);
@@ -246,7 +302,7 @@ document.getElementById('logoUpload').addEventListener('change',async function(e
     const url = await ref.getDownloadURL();
     document.getElementById('logoPreview').src = url;
 });
-
 </script>
+
 </body>
 </html>
