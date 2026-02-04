@@ -1,308 +1,1289 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-<meta charset="UTF-8">
-<title>Turnierverwaltung</title>
-<style>
-body { font-family: Arial, sans-serif; margin:0; padding:0; background:#000; color:#fff;}
-header { background:#c0392b; display:flex; align-items:center; padding:10px; justify-content:space-between; }
-header img { height:50px; margin-right:20px; border-radius:6px; }
-header h1 { margin:0; font-size:24px; color:#fff; }
-nav button { margin-left:5px; padding:6px 12px; background:#fff; color:#c0392b; border:none; border-radius:4px; cursor:pointer; font-weight:bold;}
-nav button:hover { background:#e74c3c; color:#fff; }
-section { padding:20px; max-width:1200px; margin:auto; }
-textarea, input[type=text], input[type=password] { width:100%; padding:6px; border-radius:4px; border:none; margin-top:5px; }
-table { width:100%; border-collapse: collapse; margin-top:10px; background:#111; color:#fff; }
-table, th, td { border:1px solid #fff; text-align:center; }
-th { background:#c0392b; }
-td { padding:6px; }
-button { padding:6px 12px; margin-top:5px; border:none; border-radius:4px; cursor:pointer; font-weight:bold;}
-button:hover { opacity:0.8; }
-#logoutBtn { background:#fff; color:#c0392b; }
-#logoPreview { max-height:50px; border:2px solid #fff; padding:2px; border-radius:4px; }
-h2 { color:#e74c3c; margin-top:0; }
-#newsDisplay, #playoffsDisplay, #rulesDisplay { background:#111; padding:10px; border-radius:6px; margin-top:10px; }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>International School Neustadt - Chess League</title>
+    <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-red: #e31e24;
+            --dark-red: #a01419;
+            --black: #0a0a0a;
+            --white: #ffffff;
+            --gray: #1a1a1a;
+            --light-gray: #2a2a2a;
+        }
+
+        body {
+            font-family: 'Libre Baskerville', 'Georgia', serif;
+            background: var(--black);
+            color: var(--white);
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url('Logo_2.png');
+            background-position: center center;
+            background-repeat: no-repeat;
+            background-size: 60%;
+            opacity: 0.08;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAABZJREFUeNpi2r9//38gYGAEESAAEGAAasgJOgzOKCoAAAAASUVORK5CYII=') repeat;
+            opacity: 0.03;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .header {
+            text-align: center;
+            padding: 40px 20px;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .title {
+            font-family: 'Libre Baskerville', serif;
+            font-size: 3.5rem;
+            font-weight: 700;
+            letter-spacing: 4px;
+            margin: 20px 0;
+            background: linear-gradient(135deg, var(--white) 0%, var(--primary-red) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: titleGlow 2s ease-in-out infinite alternate;
+        }
+
+        .logout-btn {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        @keyframes titleGlow {
+            from { filter: drop-shadow(0 0 10px rgba(227, 30, 36, 0.3)); }
+            to { filter: drop-shadow(0 0 20px rgba(227, 30, 36, 0.6)); }
+        }
+
+        /* Tab Navigation */
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            border-bottom: 2px solid var(--light-gray);
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            background: var(--gray);
+            color: var(--white);
+            border: none;
+            padding: 15px 30px;
+            font-size: 1rem;
+            font-weight: 600;
+            font-family: 'Libre Baskerville', serif;
+            cursor: pointer;
+            border-radius: 8px 8px 0 0;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab-btn:hover {
+            background: var(--light-gray);
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, var(--primary-red) 0%, var(--dark-red) 100%);
+            border-bottom: 3px solid var(--white);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .admin-section {
+            background: var(--gray);
+            border: 2px solid var(--primary-red);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(227, 30, 36, 0.2);
+        }
+
+        .section {
+            background: var(--gray);
+            border-left: 4px solid var(--primary-red);
+            border-radius: 8px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .section:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 30px rgba(227, 30, 36, 0.3);
+        }
+
+        .section-title {
+            font-family: 'Libre Baskerville', serif;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-red);
+            margin-bottom: 20px;
+            letter-spacing: 2px;
+            border-bottom: 2px solid var(--light-gray);
+            padding-bottom: 10px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, var(--primary-red) 0%, var(--dark-red) 100%);
+            color: var(--white);
+            border: none;
+            padding: 12px 28px;
+            font-size: 1rem;
+            font-weight: 600;
+            font-family: 'Libre Baskerville', serif;
+            letter-spacing: 1px;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            box-shadow: 0 4px 15px rgba(227, 30, 36, 0.3);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(227, 30, 36, 0.5);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background: var(--light-gray);
+            border: 1px solid var(--primary-red);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #c41e3a 0%, #8b1429 100%);
+        }
+
+        input[type="text"],
+        input[type="password"],
+        input[type="number"],
+        input[type="date"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            background: var(--light-gray);
+            border: 1px solid var(--primary-red);
+            border-radius: 6px;
+            color: var(--white);
+            font-family: 'Libre Baskerville', serif;
+            font-size: 1rem;
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: var(--white);
+            box-shadow: 0 0 10px rgba(227, 30, 36, 0.4);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        th {
+            background: linear-gradient(135deg, var(--primary-red) 0%, var(--dark-red) 100%);
+            color: var(--white);
+            padding: 15px;
+            text-align: left;
+            font-family: 'Libre Baskerville', serif;
+            font-size: 1.2rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--light-gray);
+        }
+
+        tr:hover {
+            background: var(--light-gray);
+        }
+
+        .match {
+            background: var(--light-gray);
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 6px;
+            border-left: 3px solid var(--primary-red);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .match:hover {
+            background: rgba(227, 30, 36, 0.1);
+            transform: translateX(5px);
+        }
+
+        .match-players {
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+
+        .match-vs {
+            color: var(--primary-red);
+            font-weight: 700;
+            margin: 0 15px;
+        }
+
+        .match-result {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--primary-red);
+        }
+
+        .match-date {
+            font-size: 0.9rem;
+            color: var(--light-gray);
+            margin-left: 15px;
+        }
+
+        .result-select {
+            width: auto;
+            min-width: 120px;
+        }
+
+        .past-match {
+            background: var(--light-gray);
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 6px;
+            border-left: 3px solid var(--dark-red);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            opacity: 0.85;
+        }
+
+        .past-match:hover {
+            opacity: 1;
+            background: rgba(160, 20, 25, 0.15);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .login-form {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .player-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .player-item {
+            background: var(--light-gray);
+            padding: 15px;
+            border-radius: 6px;
+            border: 1px solid var(--primary-red);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .player-item:hover {
+            background: rgba(227, 30, 36, 0.1);
+            transform: scale(1.02);
+        }
+
+        .playoff-bracket {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 20px;
+        }
+
+        .playoff-match {
+            background: linear-gradient(135deg, var(--light-gray) 0%, var(--gray) 100%);
+            padding: 20px;
+            border-radius: 8px;
+            border: 2px solid var(--primary-red);
+            text-align: center;
+        }
+
+        .playoff-match.final {
+            grid-column: 1 / -1;
+            max-width: 600px;
+            margin: 0 auto;
+            background: linear-gradient(135deg, var(--dark-red) 0%, var(--primary-red) 100%);
+        }
+
+        .trophy {
+            font-size: 3rem;
+            margin: 10px 0;
+        }
+
+        .contact {
+            text-align: center;
+            padding: 30px;
+            margin-top: 40px;
+            border-top: 2px solid var(--primary-red);
+        }
+
+        .contact a {
+            color: var(--primary-red);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .contact a:hover {
+            color: var(--white);
+        }
+
+        .news-item {
+            background: var(--light-gray);
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 6px;
+            border-left: 3px solid var(--primary-red);
+        }
+
+        .news-date {
+            color: var(--primary-red);
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .rules-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .rules-list li {
+            background: var(--light-gray);
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 6px;
+            border-left: 3px solid var(--primary-red);
+            position: relative;
+            padding-left: 50px;
+        }
+
+        .rules-list li:before {
+            content: attr(data-number);
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--primary-red);
+            font-weight: 700;
+            font-size: 1.3rem;
+        }
+
+        @media (max-width: 768px) {
+            .title {
+                font-size: 2rem;
+            }
+
+            .logout-btn {
+                position: static;
+                transform: none;
+                margin-top: 20px;
+            }
+
+            .header {
+                flex-direction: column;
+            }
+
+            .playoff-bracket {
+                grid-template-columns: 1fr;
+            }
+
+            th, td {
+                padding: 8px;
+                font-size: 0.9rem;
+            }
+
+            .tabs {
+                flex-direction: column;
+            }
+
+            .tab-btn {
+                border-radius: 6px;
+            }
+        }
+    </style>
 </head>
 <body>
+    <div class="container">
+        <div class="header">
+            <h1 class="title">ISN Chess League</h1>
+            <button class="btn btn-danger logout-btn hidden" id="logoutBtn" onclick="logout()">Abmelden</button>
+        </div>
 
-<header>
-    <div style="display:flex; align-items:center;">
-        <img id="logoPreview" src="" alt="Logo">
-        <h1>Turnierverwaltung</h1>
+        <!-- Admin Login -->
+        <div id="loginSection" class="admin-section">
+            <h2 class="section-title">Admin Login</h2>
+            <div class="login-form">
+                <input type="password" id="passwordInput" placeholder="Admin-Passwort eingeben">
+                <button class="btn" onclick="login()">Anmelden</button>
+            </div>
+        </div>
+
+        <!-- Tab Navigation -->
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('news')">📢 News</button>
+            <button class="tab-btn" onclick="switchTab('rules')">📋 Regeln</button>
+            <button class="tab-btn" onclick="switchTab('standings')">🏆 Tabelle</button>
+            <button class="tab-btn" onclick="switchTab('matches')">⚔️ Aktuelle Matches</button>
+            <button class="tab-btn" onclick="switchTab('past')">📜 Vergangene Matches</button>
+            <button class="tab-btn" onclick="switchTab('playoffs')">👑 Playoffs</button>
+            <button class="tab-btn hidden" id="adminTab" onclick="switchTab('admin')">⚙️ Admin</button>
+        </div>
+
+        <!-- News Tab -->
+        <div id="newsTab" class="tab-content active">
+            <div class="section">
+                <h2 class="section-title">📢 News & Ankündigungen</h2>
+                <div id="adminNewsPanel" class="hidden" style="margin-bottom: 20px;">
+                    <h3 style="color: var(--primary-red); margin-bottom: 15px; font-size: 1.2rem;">Neue Ankündigung erstellen</h3>
+                    <input type="text" id="newsTitle" placeholder="Titel der Ankündigung">
+                    <textarea id="newsContent" placeholder="Inhalt der Ankündigung"></textarea>
+                    <button class="btn" onclick="addNews()">Ankündigung hinzufügen</button>
+                </div>
+                <div id="newsList">
+                    <p style="color: var(--light-gray);">Noch keine Ankündigungen vorhanden.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Rules Tab -->
+        <div id="rulesTab" class="tab-content">
+            <div class="section">
+                <h2 class="section-title">📋 Turnierregeln</h2>
+                <div id="adminRulesPanel" class="hidden" style="margin-bottom: 20px;">
+                    <h3 style="color: var(--primary-red); margin-bottom: 15px; font-size: 1.2rem;">Neue Regel hinzufügen</h3>
+                    <textarea id="newRule" placeholder="Regel eingeben"></textarea>
+                    <button class="btn" onclick="addRule()">Regel hinzufügen</button>
+                </div>
+                <ul class="rules-list" id="rulesList">
+                    <li data-number="1">Jeder Spieler spielt gegen jeden anderen Spieler genau einmal.</li>
+                    <li data-number="2">Sieg = 1 Punkt, Remis = 0,5 Punkte, Niederlage = 0 Punkte.</li>
+                    <li data-number="3">Bedenkzeit: 15 Minuten pro Spieler mit 10 Sekunden Inkrement.</li>
+                    <li data-number="4">Die Top 4 Spieler qualifizieren sich für die Playoffs.</li>
+                    <li data-number="5">Bei Punktgleichheit entscheidet das direkte Duell.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Standings Tab -->
+        <div id="standingsTab" class="tab-content">
+            <div class="section">
+                <h2 class="section-title">🏆 Tabelle</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Rang</th>
+                            <th>Spieler</th>
+                            <th>Spiele</th>
+                            <th>Siege</th>
+                            <th>Unentschieden</th>
+                            <th>Niederlagen</th>
+                            <th>Punkte</th>
+                        </tr>
+                    </thead>
+                    <tbody id="standingsTable"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Matches Tab -->
+        <div id="matchesTab" class="tab-content">
+            <div class="section">
+                <h2 class="section-title">⚔️ Aktuelle Spielpaarungen</h2>
+                <div id="matchesList">
+                    <p style="color: var(--light-gray);">Noch keine Spielpaarungen vorhanden.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Past Matches Tab -->
+        <div id="pastTab" class="tab-content">
+            <div class="section">
+                <h2 class="section-title">📜 Vergangene Matches</h2>
+                <div id="pastMatchesList">
+                    <p style="color: var(--light-gray);">Noch keine abgeschlossenen Matches.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Playoffs Tab -->
+        <div id="playoffsTab" class="tab-content">
+            <div class="section">
+                <h2 class="section-title">👑 Playoffs</h2>
+                <button class="btn" onclick="startPlayoffs()" id="startPlayoffsBtn">Playoffs starten</button>
+                <div id="playoffsBracket" class="hidden">
+                    <h3 style="text-align: center; margin: 20px 0; font-family: 'Libre Baskerville', serif; font-size: 1.8rem; font-weight: 700; color: var(--primary-red);">Halbfinale</h3>
+                    <div class="playoff-bracket">
+                        <div class="playoff-match" id="playoff1"></div>
+                        <div class="playoff-match" id="playoff2"></div>
+                    </div>
+                    <h3 style="text-align: center; margin: 30px 0 20px; font-family: 'Libre Baskerville', serif; font-size: 1.8rem; font-weight: 700; color: var(--primary-red);">Finale</h3>
+                    <div class="playoff-match final" id="finalMatch">
+                        <div class="trophy">🏆</div>
+                        <div id="finalContent">Warte auf Halbfinal-Ergebnisse...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Admin Tab -->
+        <div id="adminTab" class="tab-content">
+            <div class="section">
+                <h2 class="section-title">⚙️ Spielerverwaltung</h2>
+                <input type="text" id="newPlayerName" placeholder="Spielername">
+                <button class="btn" onclick="addPlayer()">Spieler hinzufügen</button>
+                
+                <div class="player-list" id="playerList"></div>
+            </div>
+
+            <div class="section">
+                <h2 class="section-title">⚔️ Match erstellen</h2>
+                <select id="whitePlayer">
+                    <option value="">Weiß wählen</option>
+                </select>
+                <select id="blackPlayer">
+                    <option value="">Schwarz wählen</option>
+                </select>
+                <input type="date" id="matchDate">
+                <button class="btn" onclick="createMatch()">Match erstellen</button>
+            </div>
+
+            <div class="section">
+                <h2 class="section-title">💾 Daten-Export</h2>
+                <button class="btn" onclick="exportData()">JSON herunterladen</button>
+                <button class="btn btn-secondary" onclick="document.getElementById('importFile').click()">JSON importieren</button>
+                <input type="file" id="importFile" style="display: none" accept=".json" onchange="importData(event)">
+            </div>
+        </div>
+
+        <div class="contact">
+            <p>Kontakt: <a href="mailto:sander@is-neustadt.de">sander@is-neustadt.de</a></p>
+        </div>
     </div>
-    <nav id="adminNav" style="display:none;">
-        <button onclick="showSection('news')">News</button>
-        <button onclick="showSection('players')">Tabelle</button>
-        <button onclick="showSection('matches')">Matches</button>
-        <button onclick="showSection('playoffs')">Playoffs</button>
-        <button onclick="showSection('rules')">Turnierregeln</button>
-        <button id="logoutBtn" onclick="logout()">Logout</button>
-    </nav>
-</header>
 
-<section id="loginSection">
-    <h2>Admin Login</h2>
-    <input type="password" id="password" placeholder="Passwort">
-    <button onclick="login()">Login</button>
-</section>
+    <script>
+        // Admin password
+        const ADMIN_PASSWORD = '5082';
+        const JSON_FILE = 'chess_league_data.json';
 
-<section id="newsSection" style="display:none;">
-    <h2>News & Ankündigungen</h2>
-    <textarea id="newsEditor" rows="5"></textarea>
-    <button onclick="saveNews()">Speichern</button>
-    <div id="newsDisplay"></div>
-</section>
+        let isAdmin = false;
+        let players = [];
+        let matches = [];
+        let playoffMatches = [];
+        let newsItems = [];
+        let rules = [
+            'Jeder Spieler spielt gegen jeden anderen Spieler genau einmal.',
+            'Sieg = 1 Punkt, Remis = 0,5 Punkte, Niederlage = 0 Punkte.',
+            'Bedenkzeit: 15 Minuten pro Spieler mit 10 Sekunden Inkrement.',
+            'Die Top 4 Spieler qualifizieren sich für die Playoffs.',
+            'Bei Punktgleichheit entscheidet das direkte Duell.'
+        ];
 
-<section id="playersSection" style="display:none;">
-    <h2>Spieler Tabelle</h2>
-    <button onclick="addPlayer()">Spieler hinzufügen</button>
-    <table id="playersTable">
-        <thead>
-            <tr>
-                <th>Rang</th>
-                <th>Spielername</th>
-                <th>Spiele</th>
-                <th>Siege</th>
-                <th>Unentschieden</th>
-                <th>Niederlagen</th>
-                <th>Punkte</th>
-            </tr>
-        </thead>
-        <tbody></tbody>
-    </table>
-</section>
+        // Tab switching
+        function switchTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Remove active from all buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Show selected tab
+            document.getElementById(tabName + 'Tab').classList.add('active');
+            
+            // Activate button
+            event.target.classList.add('active');
+        }
 
-<section id="matchesSection" style="display:none;">
-    <h2>Matches</h2>
-    <button onclick="generateMatches()">Neue Matches generieren</button>
-    <table id="matchesTable">
-        <thead>
-            <tr>
-                <th>Spiel 1</th><th>Spiel 2</th><th>Ergebnis</th>
-            </tr>
-        </thead>
-        <tbody></tbody>
-    </table>
-</section>
+        // Load data from JSON file
+        async function loadDataFromJSON() {
+            try {
+                const response = await fetch(JSON_FILE);
+                if (!response.ok) {
+                    console.log('JSON file not found, using default data');
+                    return;
+                }
+                
+                const data = await response.json();
+                
+                // Convert JSON format to internal format
+                if (data.players) {
+                    players = data.players.map(p => ({
+                        name: p.name,
+                        wins: p.wins || 0,
+                        draws: p.draws || 0,
+                        losses: p.losses || 0,
+                        points: (p.wins || 0) + (p.draws || 0) * 0.5,
+                        games: (p.wins || 0) + (p.draws || 0) + (p.losses || 0)
+                    }));
+                }
+                
+                if (data.matches) {
+                    matches = data.matches.map(m => ({
+                        id: m.id,
+                        player1: m.whitePlayer,
+                        player2: m.blackPlayer,
+                        result: m.result,
+                        date: m.date,
+                        round: Math.ceil(m.id / (players.length / 2))
+                    }));
+                }
+                
+                if (data.news) {
+                    newsItems = data.news;
+                }
+                
+                console.log('Data loaded from JSON successfully');
+                updateUI();
+            } catch (error) {
+                console.error('Error loading JSON:', error);
+                // Fall back to localStorage
+                loadDataFromLocalStorage();
+            }
+        }
 
-<section id="playoffsSection" style="display:none;">
-    <h2>Playoffs</h2>
-    <button onclick="generatePlayoffs()">Playoffs starten</button>
-    <div id="playoffsDisplay"></div>
-</section>
+        // Load data from localStorage (fallback)
+        function loadDataFromLocalStorage() {
+            const savedPlayers = localStorage.getItem('chessPlayers');
+            const savedMatches = localStorage.getItem('chessMatches');
+            const savedNews = localStorage.getItem('chessNews');
+            const savedRules = localStorage.getItem('chessRules');
+            
+            if (savedPlayers) players = JSON.parse(savedPlayers);
+            if (savedMatches) matches = JSON.parse(savedMatches);
+            if (savedNews) newsItems = JSON.parse(savedNews);
+            if (savedRules) rules = JSON.parse(savedRules);
+            
+            updateUI();
+        }
 
-<section id="rulesSection" style="display:none;">
-    <h2>Turnierregeln</h2>
-    <textarea id="rulesEditor" rows="6" placeholder="Hier die Turnierregeln eingeben..."></textarea>
-    <button onclick="saveRules()">Speichern</button>
-    <div id="rulesDisplay"></div>
-</section>
+        // Save data to localStorage and prepare JSON export
+        function saveData() {
+            localStorage.setItem('chessPlayers', JSON.stringify(players));
+            localStorage.setItem('chessMatches', JSON.stringify(matches));
+            localStorage.setItem('chessNews', JSON.stringify(newsItems));
+            localStorage.setItem('chessRules', JSON.stringify(rules));
+            
+            // Auto-export JSON
+            autoExportJSON();
+        }
 
-<section>
-    <h2>Kontakt</h2>
-    <p>Email: <a href="mailto:f.frembs@is-neustadt.de" style="color:#e74c3c;">f.frembs@is-neustadt.de</a></p>
-    <input type="file" id="logoUpload">
-</section>
+        // Auto-export JSON data
+        function autoExportJSON() {
+            const data = {
+                players: players.map(p => ({
+                    id: players.indexOf(p) + 1,
+                    name: p.name,
+                    wins: p.wins,
+                    draws: p.draws,
+                    losses: p.losses
+                })),
+                matches: matches.map(m => ({
+                    id: m.id || matches.indexOf(m) + 1,
+                    whitePlayer: m.player1,
+                    blackPlayer: m.player2,
+                    result: m.result,
+                    date: m.date || new Date().toISOString().split('T')[0]
+                })),
+                news: newsItems
+            };
+            
+            // Store in localStorage for manual download
+            localStorage.setItem('chessJSONExport', JSON.stringify(data, null, 2));
+        }
 
-<!-- Firebase -->
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-storage-compat.js"></script>
+        // Export data as JSON file
+        function exportData() {
+            const jsonData = localStorage.getItem('chessJSONExport') || JSON.stringify({
+                players: [],
+                matches: [],
+                news: []
+            }, null, 2);
+            
+            const blob = new Blob([jsonData], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'chess_league_data.json';
+            a.click();
+            URL.revokeObjectURL(url);
+            
+            alert('Daten wurden exportiert!');
+        }
 
-<script>
-// ------------------- Firebase konfigurieren -------------------
-const firebaseConfig = {
-    apiKey: "DEINE_API_KEY",
-    authDomain: "deinprojekt.firebaseapp.com",
-    projectId: "deinprojekt",
-    storageBucket: "deinprojekt.appspot.com",
-    messagingSenderId: "XXX",
-    appId: "XXX"
-};
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
-const storage = firebase.storage();
+        // Import data from JSON file
+        function importData(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    
+                    // Convert and load data
+                    if (data.players) {
+                        players = data.players.map(p => ({
+                            name: p.name,
+                            wins: p.wins || 0,
+                            draws: p.draws || 0,
+                            losses: p.losses || 0,
+                            points: (p.wins || 0) + (p.draws || 0) * 0.5,
+                            games: (p.wins || 0) + (p.draws || 0) + (p.losses || 0)
+                        }));
+                    }
+                    
+                    if (data.matches) {
+                        matches = data.matches.map(m => ({
+                            id: m.id,
+                            player1: m.whitePlayer,
+                            player2: m.blackPlayer,
+                            result: m.result,
+                            date: m.date,
+                            round: Math.ceil(m.id / (players.length / 2))
+                        }));
+                    }
+                    
+                    if (data.news) {
+                        newsItems = data.news;
+                    }
+                    
+                    saveData();
+                    updateUI();
+                    alert('Daten wurden erfolgreich importiert!');
+                } catch (error) {
+                    alert('Fehler beim Importieren: ' + error.message);
+                }
+            };
+            reader.readAsText(file);
+        }
 
-// ------------------- Admin Login -------------------
-const ADMIN_PASSWORD = "5082";
+        // Login function
+        function login() {
+            const password = document.getElementById('passwordInput').value;
+            if (password === ADMIN_PASSWORD) {
+                isAdmin = true;
+                document.getElementById('loginSection').classList.add('hidden');
+                document.getElementById('adminNewsPanel').classList.remove('hidden');
+                document.getElementById('adminRulesPanel').classList.remove('hidden');
+                document.getElementById('adminTab').classList.remove('hidden');
+                document.getElementById('logoutBtn').classList.remove('hidden');
+                updateUI();
+                alert('Erfolgreich angemeldet!');
+            } else {
+                alert('Falsches Passwort!');
+            }
+        }
 
-function login(){
-    if(document.getElementById("password").value === ADMIN_PASSWORD){
-        localStorage.setItem("loggedIn","true");
-        document.getElementById("loginSection").style.display="none";
-        document.getElementById("adminNav").style.display="block";
-        showSection('news');
-        loadNews();
-        loadPlayers();
-        loadMatches();
-        loadRules();
-    } else { alert("Falsches Passwort"); }
-}
-function logout(){ localStorage.removeItem("loggedIn"); location.reload(); }
-if(localStorage.getItem("loggedIn")==="true"){ login(); }
-function showSection(id){
-    ['news','players','matches','playoffs','rules'].forEach(s=>{
-        document.getElementById(s+'Section').style.display = (s===id)?'block':'none';
-    });
-}
+        // Logout function
+        function logout() {
+            isAdmin = false;
+            document.getElementById('loginSection').classList.remove('hidden');
+            document.getElementById('adminNewsPanel').classList.add('hidden');
+            document.getElementById('adminRulesPanel').classList.add('hidden');
+            document.getElementById('adminTab').classList.add('hidden');
+            document.getElementById('logoutBtn').classList.add('hidden');
+            document.getElementById('passwordInput').value = '';
+            switchTab('news');
+            updateUI();
+        }
 
-// ------------------- News -------------------
-async function saveNews(){
-    const content = document.getElementById("newsEditor").value;
-    await db.collection('news').doc('main').set({content});
-    loadNews();
-}
-async function loadNews(){
-    const doc = await db.collection('news').doc('main').get();
-    if(doc.exists){
-        document.getElementById("newsEditor").value = doc.data().content;
-        document.getElementById("newsDisplay").innerHTML = doc.data().content.replace(/\n/g,'<br>');
-    } else { document.getElementById("newsDisplay").innerHTML="Noch keine News."; }
-}
+        // Add news item
+        function addNews() {
+            const title = document.getElementById('newsTitle').value.trim();
+            const content = document.getElementById('newsContent').value.trim();
+            
+            if (!title || !content) {
+                alert('Bitte füllen Sie Titel und Inhalt aus!');
+                return;
+            }
 
-// ------------------- Spieler Tabelle -------------------
-async function loadPlayers(){
-    const snapshot = await db.collection('players').get();
-    const tbody = document.querySelector('#playersTable tbody');
-    tbody.innerHTML="";
-    let players = [];
-    snapshot.forEach(doc=>{
-        let p = doc.data();
-        p.id = doc.id;
-        p.spiele = p.siege + p.unentschieden + p.niederlagen;
-        p.punkte = p.siege + 0.5*p.unentschieden;
-        players.push(p);
-    });
-    players.sort((a,b)=>b.punkte-a.punkte);
-    players.forEach((p,i)=>{
-        const tr=document.createElement('tr');
-        tr.innerHTML=`<td>${i+1}</td>
-            <td>${p.name}</td>
-            <td>${p.spiele}</td>
-            <td>${p.siege}</td>
-            <td>${p.unentschieden}</td>
-            <td>${p.niederlagen}</td>
-            <td>${p.punkte}</td>`;
-        tbody.appendChild(tr);
-    });
-}
+            const newsItem = {
+                id: Date.now(),
+                title: title,
+                content: content,
+                date: new Date().toLocaleDateString('de-DE')
+            };
 
-async function addPlayer(){
-    const name = prompt("Spielername:");
-    if(!name) return;
-    await db.collection('players').add({name, siege:0, unentschieden:0, niederlagen:0});
-    loadPlayers();
-}
+            newsItems.unshift(newsItem);
+            document.getElementById('newsTitle').value = '';
+            document.getElementById('newsContent').value = '';
+            saveData();
+            updateUI();
+        }
 
-// ------------------- Matches -------------------
-async function generateMatches(){
-    const snapshot = await db.collection('players').get();
-    let players = [];
-    snapshot.forEach(doc=>{
-        let p = doc.data();
-        p.id = doc.id;
-        players.push(p);
-    });
-    players = players.sort(()=>0.5 - Math.random());
-    let pairs=[];
-    for(let i=0;i<players.length;i+=2){
-        if(players[i+1]) pairs.push([players[i],players[i+1]]);
-    }
-    for(let p of pairs){
-        let result;
-        let r = Math.random();
-        if(r<0.45){ result=`${p[0].name} gewinnt`; await updateScore(p[0].id,'sieg'); await updateScore(p[1].id,'niederlage'); }
-        else if(r<0.9){ result=`${p[1].name} gewinnt`; await updateScore(p[1].id,'sieg'); await updateScore(p[0].id,'niederlage'); }
-        else{ result="Unentschieden"; await updateScore(p[0].id,'unentschieden'); await updateScore(p[1].id,'unentschieden'); }
-        await db.collection('matches').add({
-            spieler1Name:p[0].name,
-            spieler2Name:p[1].name,
-            resultText: result,
-            date: new Date()
-        });
-    }
-    loadPlayers();
-    loadMatches();
-}
+        // Delete news item
+        function deleteNews(id) {
+            if (confirm('Möchten Sie diese Ankündigung wirklich löschen?')) {
+                newsItems = newsItems.filter(item => item.id !== id);
+                saveData();
+                updateUI();
+            }
+        }
 
-async function loadMatches(){
-    const snapshot = await db.collection('matches').orderBy('date').get();
-    const tbody = document.querySelector('#matchesTable tbody');
-    tbody.innerHTML="";
-    snapshot.forEach(doc=>{
-        const data = doc.data();
-        const tr=document.createElement('tr');
-        tr.innerHTML=`<td>${data.spieler1Name}</td><td>${data.spieler2Name}</td><td>${data.resultText}</td>`;
-        tbody.appendChild(tr);
-    });
-}
+        // Add rule
+        function addRule() {
+            const ruleText = document.getElementById('newRule').value.trim();
+            
+            if (!ruleText) {
+                alert('Bitte geben Sie eine Regel ein!');
+                return;
+            }
 
-async function updateScore(playerId,type){
-    const doc = await db.collection('players').doc(playerId).get();
-    const data = doc.data();
-    if(type==='sieg') data.siege++; else if(type==='niederlage') data.niederlagen++; else data.unentschieden++;
-    await db.collection('players').doc(playerId).set(data);
-}
+            rules.push(ruleText);
+            document.getElementById('newRule').value = '';
+            saveData();
+            updateUI();
+        }
 
-// ------------------- Playoffs -------------------
-async function generatePlayoffs(){
-    const snapshot = await db.collection('players').get();
-    let players=[];
-    snapshot.forEach(doc=>{
-        let data = doc.data();
-        data.id = doc.id;
-        data.punkte = data.siege + 0.5*data.unentschieden;
-        players.push(data);
-    });
-    players.sort((a,b)=>b.punkte-a.punkte);
-    let top4 = players.slice(0,4);
-    if(top4.length<4){ document.getElementById('playoffsDisplay').innerHTML="Nicht genug Spieler für Playoffs!"; return; }
+        // Delete rule
+        function deleteRule(index) {
+            if (confirm('Möchten Sie diese Regel wirklich löschen?')) {
+                rules.splice(index, 1);
+                saveData();
+                updateUI();
+            }
+        }
 
-    let semifinals = [
-        {spieler1:top4[0], spieler2:top4[3]},
-        {spieler1:top4[1], spieler2:top4[2]}
-    ];
+        // Add player
+        function addPlayer() {
+            const playerName = document.getElementById('newPlayerName').value.trim();
+            if (!playerName) {
+                alert('Bitte Namen eingeben!');
+                return;
+            }
+            if (players.find(p => p.name === playerName)) {
+                alert('Spieler existiert bereits!');
+                return;
+            }
+            players.push({
+                name: playerName,
+                wins: 0,
+                draws: 0,
+                losses: 0,
+                points: 0,
+                games: 0
+            });
+            document.getElementById('newPlayerName').value = '';
+            saveData();
+            updateUI();
+        }
 
-    let results="<h3>Halbfinale</h3>";
-    let finalists=[];
-    semifinals.forEach((match,i)=>{
-        let winner = Math.random()<0.5?match.spieler1:match.spieler2;
-        finalists.push(winner);
-        results+=`Halbfinale ${i+1}: ${match.spieler1.name} vs ${match.spieler2.name} → Sieger: <b>${winner.name}</b><br>`;
-    });
+        // Remove player
+        function removePlayer(playerName) {
+            if (confirm(`Möchten Sie ${playerName} wirklich löschen?`)) {
+                players = players.filter(p => p.name !== playerName);
+                matches = matches.filter(m => m.player1 !== playerName && m.player2 !== playerName);
+                saveData();
+                updateUI();
+            }
+        }
 
-    let finalWinner = Math.random()<0.5?finalists[0]:finalists[1];
-    results+="<h3>Finale</h3>";
-    results+=`${finalists[0].name} vs ${finalists[1].name} → Sieger: <b>${finalWinner.name}</b>`;
-    document.getElementById('playoffsDisplay').innerHTML=results;
-}
+        // Create match
+        function createMatch() {
+            const white = document.getElementById('whitePlayer').value;
+            const black = document.getElementById('blackPlayer').value;
+            const date = document.getElementById('matchDate').value;
+            
+            if (!white || !black) {
+                alert('Bitte beide Spieler auswählen!');
+                return;
+            }
+            
+            if (white === black) {
+                alert('Spieler können nicht gegen sich selbst spielen!');
+                return;
+            }
+            
+            const newMatch = {
+                id: matches.length + 1,
+                player1: white,
+                player2: black,
+                result: null,
+                date: date || new Date().toISOString().split('T')[0],
+                round: Math.ceil((matches.length + 1) / (players.length / 2))
+            };
+            
+            matches.push(newMatch);
+            saveData();
+            updateUI();
+            alert('Match wurde erstellt!');
+        }
 
-// ------------------- Turnierregeln -------------------
-async function saveRules(){
-    const content = document.getElementById('rulesEditor').value;
-    await db.collection('rules').doc('main').set({content});
-    loadRules();
-}
+        // Update match result
+        function updateMatchResult(matchIndex, result) {
+            const match = matches[matchIndex];
+            const player1 = players.find(p => p.name === match.player1);
+            const player2 = players.find(p => p.name === match.player2);
 
-async function loadRules(){
-    const doc = await db.collection('rules').doc('main').get();
-    if(doc.exists){
-        document.getElementById('rulesEditor').value = doc.data().content;
-        document.getElementById('rulesDisplay').innerHTML = doc.data().content.replace(/\n/g,'<br>');
-    } else { document.getElementById('rulesDisplay').innerHTML = "Noch keine Regeln hinterlegt."; }
-}
+            // Revert old result
+            if (match.result) {
+                if (match.result === '1-0') {
+                    player1.wins--;
+                    player1.points--;
+                    player2.losses--;
+                    player1.games--;
+                    player2.games--;
+                } else if (match.result === '0-1') {
+                    player2.wins--;
+                    player2.points--;
+                    player1.losses--;
+                    player1.games--;
+                    player2.games--;
+                } else if (match.result === '0.5-0.5') {
+                    player1.draws--;
+                    player2.draws--;
+                    player1.points -= 0.5;
+                    player2.points -= 0.5;
+                    player1.games--;
+                    player2.games--;
+                }
+            }
 
-// ------------------- Logo Upload -------------------
-document.getElementById('logoUpload').addEventListener('change', async function(e){
-    const file = e.target.files[0];
-    if(!file) return;
-    const ref = storage.ref('logo/'+file.name);
-    await ref.put(file);
-    const url = await ref.getDownloadURL();
-    document.getElementById('logoPreview').src = url;
-});
-</script>
+            // Apply new result
+            match.result = result;
+            if (result === '1-0') {
+                player1.wins++;
+                player1.points++;
+                player2.losses++;
+                player1.games++;
+                player2.games++;
+            } else if (result === '0-1') {
+                player2.wins++;
+                player2.points++;
+                player1.losses++;
+                player1.games++;
+                player2.games++;
+            } else if (result === '0.5-0.5') {
+                player1.draws++;
+                player2.draws++;
+                player1.points += 0.5;
+                player2.points += 0.5;
+                player1.games++;
+                player2.games++;
+            }
 
+            saveData();
+            updateUI();
+        }
+
+        // Update playoff match result
+        function updatePlayoffResult(matchId, winner) {
+            const match = playoffMatches.find(m => m.id === matchId);
+            if (match) {
+                match.winner = winner;
+                updateUI();
+            }
+        }
+
+        // Start playoffs
+        function startPlayoffs() {
+            if (players.length < 4) {
+                alert('Mindestens 4 Spieler benötigt für Playoffs!');
+                return;
+            }
+
+            const sortedPlayers = [...players].sort((a, b) => b.points - a.points);
+            const top4 = sortedPlayers.slice(0, 4);
+
+            playoffMatches = [
+                { id: 'semi1', player1: top4[0].name, player2: top4[3].name, winner: null },
+                { id: 'semi2', player1: top4[1].name, player2: top4[2].name, winner: null },
+                { id: 'final', player1: null, player2: null, winner: null }
+            ];
+
+            document.getElementById('playoffsBracket').classList.remove('hidden');
+            document.getElementById('startPlayoffsBtn').classList.add('hidden');
+            updateUI();
+        }
+
+        // Update UI
+        function updateUI() {
+            // Update player dropdowns
+            const whiteSelect = document.getElementById('whitePlayer');
+            const blackSelect = document.getElementById('blackPlayer');
+            if (whiteSelect && blackSelect) {
+                whiteSelect.innerHTML = '<option value="">Weiß wählen</option>';
+                blackSelect.innerHTML = '<option value="">Schwarz wählen</option>';
+                players.forEach(p => {
+                    whiteSelect.innerHTML += `<option value="${p.name}">${p.name}</option>`;
+                    blackSelect.innerHTML += `<option value="${p.name}">${p.name}</option>`;
+                });
+            }
+
+            // Update news
+            const newsList = document.getElementById('newsList');
+            if (newsItems.length === 0) {
+                newsList.innerHTML = '<p style="color: var(--light-gray);">Noch keine Ankündigungen vorhanden.</p>';
+            } else {
+                newsList.innerHTML = '';
+                newsItems.forEach(item => {
+                    const newsDiv = document.createElement('div');
+                    newsDiv.className = 'news-item';
+                    newsDiv.innerHTML = `
+                        <div class="news-date">${item.date}</div>
+                        <h3 style="color: var(--primary-red); margin-bottom: 10px; font-size: 1.3rem;">${item.title}</h3>
+                        <p>${item.content}</p>
+                        ${isAdmin ? `<button class="btn btn-danger" style="margin-top: 10px; padding: 6px 12px; font-size: 0.9rem;" onclick="deleteNews(${item.id})">Löschen</button>` : ''}
+                    `;
+                    newsList.appendChild(newsDiv);
+                });
+            }
+
+            // Update rules
+            const rulesList = document.getElementById('rulesList');
+            rulesList.innerHTML = '';
+            rules.forEach((rule, index) => {
+                const li = document.createElement('li');
+                li.setAttribute('data-number', index + 1);
+                li.innerHTML = `
+                    ${rule}
+                    ${isAdmin ? `<button class="btn btn-danger" style="margin-left: 15px; padding: 6px 12px; font-size: 0.9rem;" onclick="deleteRule(${index})">Löschen</button>` : ''}
+                `;
+                rulesList.appendChild(li);
+            });
+
+            // Update player list
+            const playerListDiv = document.getElementById('playerList');
+            if (playerListDiv) {
+                playerListDiv.innerHTML = '';
+                players.forEach(player => {
+                    const playerDiv = document.createElement('div');
+                    playerDiv.className = 'player-item';
+                    playerDiv.innerHTML = `
+                        <span>${player.name}</span>
+                        ${isAdmin ? `<button class="btn btn-danger" style="padding: 6px 12px; font-size: 0.9rem;" onclick="removePlayer('${player.name}')">Löschen</button>` : ''}
+                    `;
+                    playerListDiv.appendChild(playerDiv);
+                });
+            }
+
+            // Update standings
+            const standingsTable = document.getElementById('standingsTable');
+            const sortedPlayers = [...players].sort((a, b) => b.points - a.points);
+            standingsTable.innerHTML = '';
+            sortedPlayers.forEach((player, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><strong>${index + 1}</strong></td>
+                    <td><strong>${player.name}</strong></td>
+                    <td>${player.games}</td>
+                    <td>${player.wins}</td>
+                    <td>${player.draws}</td>
+                    <td>${player.losses}</td>
+                    <td><strong>${player.points.toFixed(1)}</strong></td>
+                `;
+                standingsTable.appendChild(row);
+            });
+
+            // Update current matches
+            const matchesList = document.getElementById('matchesList');
+            const currentMatches = matches.filter(m => !m.result);
+            
+            if (currentMatches.length === 0) {
+                matchesList.innerHTML = '<p style="color: var(--light-gray);">Noch keine Spielpaarungen vorhanden.</p>';
+            } else {
+                matchesList.innerHTML = '';
+                currentMatches.forEach(match => {
+                    const matchDiv = document.createElement('div');
+                    matchDiv.className = 'match';
+                    const globalIndex = matches.indexOf(match);
+                    
+                    matchDiv.innerHTML = `
+                        <div class="match-players">
+                            <span>${match.player1}</span>
+                            <span class="match-vs">VS</span>
+                            <span>${match.player2}</span>
+                            <span class="match-date">${match.date || ''}</span>
+                        </div>
+                        <select class="result-select" onchange="updateMatchResult(${globalIndex}, this.value)" ${!isAdmin ? 'disabled' : ''}>
+                            <option value="">Ergebnis wählen</option>
+                            <option value="1-0">1-0 (${match.player1} gewinnt)</option>
+                            <option value="0.5-0.5">0.5-0.5 (Unentschieden)</option>
+                            <option value="0-1">0-1 (${match.player2} gewinnt)</option>
+                        </select>
+                    `;
+                    matchesList.appendChild(matchDiv);
+                });
+            }
+
+            // Update past matches
+            const pastMatchesList = document.getElementById('pastMatchesList');
+            const completedMatches = matches.filter(m => m.result);
+            
+            if (completedMatches.length === 0) {
+                pastMatchesList.innerHTML = '<p style="color: var(--light-gray);">Noch keine abgeschlossenen Matches.</p>';
+            } else {
+                pastMatchesList.innerHTML = '';
+                
+                // Sort by date (newest first)
+                completedMatches.sort((a, b) => {
+                    const dateA = new Date(a.date || '2000-01-01');
+                    const dateB = new Date(b.date || '2000-01-01');
+                    return dateB - dateA;
+                });
+
+                completedMatches.forEach(match => {
+                    const matchDiv = document.createElement('div');
+                    matchDiv.className = 'past-match';
+                    
+                    let resultDisplay = '';
+                    if (match.result === '1-0') {
+                        resultDisplay = `<span class="match-result">${match.player1} gewinnt (1-0)</span>`;
+                    } else if (match.result === '0-1') {
+                        resultDisplay = `<span class="match-result">${match.player2} gewinnt (0-1)</span>`;
+                    } else if (match.result === '0.5-0.5') {
+                        resultDisplay = `<span class="match-result">Unentschieden (0.5-0.5)</span>`;
+                    }
+                    
+                    matchDiv.innerHTML = `
+                        <div class="match-players">
+                            <span>${match.player1}</span>
+                            <span class="match-vs">VS</span>
+                            <span>${match.player2}</span>
+                            <span class="match-date">${match.date || ''}</span>
+                        </div>
+                        ${resultDisplay}
+                    `;
+                    pastMatchesList.appendChild(matchDiv);
+                });
+            }
+
+            // Update playoffs
+            if (playoffMatches.length > 0) {
+                const semi1 = playoffMatches.find(m => m.id === 'semi1');
+                const semi2 = playoffMatches.find(m => m.id === 'semi2');
+                const final = playoffMatches.find(m => m.id === 'final');
+
+                document.getElementById('playoff1').innerHTML = `
+                    <h4 style="margin-bottom: 15px; font-family: 'Libre Baskerville', serif; font-size: 1.3rem; font-weight: 700;">Halbfinale 1</h4>
+                    <div style="font-size: 1.1rem; margin: 15px 0;">${semi1.player1} <span style="color: var(--primary-red);">VS</span> ${semi1.player2}</div>
+                    ${isAdmin ? `
+                        <select onchange="updatePlayoffResult('semi1', this.value)" style="margin-top: 10px;">
+                            <option value="">Gewinner wählen</option>
+                            <option value="${semi1.player1}" ${semi1.winner === semi1.player1 ? 'selected' : ''}>${semi1.player1}</option>
+                            <option value="${semi1.player2}" ${semi1.winner === semi1.player2 ? 'selected' : ''}>${semi1.player2}</option>
+                        </select>
+                    ` : ''}
+                    ${semi1.winner ? `<div style="margin-top: 15px; color: var(--primary-red); font-weight: 700;">Gewinner: ${semi1.winner}</div>` : ''}
+                `;
+
+                document.getElementById('playoff2').innerHTML = `
+                    <h4 style="margin-bottom: 15px; font-family: 'Libre Baskerville', serif; font-size: 1.3rem; font-weight: 700;">Halbfinale 2</h4>
+                    <div style="font-size: 1.1rem; margin: 15px 0;">${semi2.player1} <span style="color: var(--primary-red);">VS</span> ${semi2.player2}</div>
+                    ${isAdmin ? `
+                        <select onchange="updatePlayoffResult('semi2', this.value)" style="margin-top: 10px;">
+                            <option value="">Gewinner wählen</option>
+                            <option value="${semi2.player1}" ${semi2.winner === semi2.player1 ? 'selected' : ''}>${semi2.player1}</option>
+                            <option value="${semi2.player2}" ${semi2.winner === semi2.player2 ? 'selected' : ''}>${semi2.player2}</option>
+                        </select>
+                    ` : ''}
+                    ${semi2.winner ? `<div style="margin-top: 15px; color: var(--primary-red); font-weight: 700;">Gewinner: ${semi2.winner}</div>` : ''}
+                `;
+
+                if (semi1.winner && semi2.winner) {
+                    final.player1 = semi1.winner;
+                    final.player2 = semi2.winner;
+
+                    document.getElementById('finalContent').innerHTML = `
+                        <div style="font-size: 1.3rem; margin: 15px 0; font-weight: 700;">${final.player1} <span style="color: var(--white);">VS</span> ${final.player2}</div>
+                        ${isAdmin ? `
+                            <select onchange="updatePlayoffResult('final', this.value)" style="margin-top: 15px;">
+                                <option value="">Champion wählen</option>
+                                <option value="${final.player1}" ${final.winner === final.player1 ? 'selected' : ''}>${final.player1}</option>
+                                <option value="${final.player2}" ${final.winner === final.player2 ? 'selected' : ''}>${final.player2}</option>
+                            </select>
+                        ` : ''}
+                        ${final.winner ? `<div style="margin-top: 20px; font-size: 2rem; font-family: 'Libre Baskerville', serif; font-weight: 700; color: var(--white);">🏆 Champion: ${final.winner} 🏆</div>` : ''}
+                    `;
+                }
+            }
+        }
+
+        // Initialize on page load
+        window.onload = function() {
+            loadDataFromJSON();
+        };
+    </script>
 </body>
 </html>
