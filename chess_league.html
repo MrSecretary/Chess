@@ -1,987 +1,252 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>International School Neustadt - Chess League</title>
-    <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        :root {
-            --primary-red: #e31e24;
-            --dark-red: #a01419;
-            --black: #0a0a0a;
-            --white: #ffffff;
-            --gray: #1a1a1a;
-            --light-gray: #2a2a2a;
-        }
-
-        body {
-            font-family: 'Libre Baskerville', 'Georgia', serif;
-            background: var(--black);
-            color: var(--white);
-            min-height: 100vh;
-            position: relative;
-            overflow-x: hidden;
-        }
-
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-image: url('Logo_2.png');
-            background-position: center center;
-            background-repeat: no-repeat;
-            background-size: 60%;
-            opacity: 0.08;
-            pointer-events: none;
-            z-index: 1;
-        }
-
-        body::after {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAABZJREFUeNpi2r9//38gYGAEESAAEGAAasgJOgzOKCoAAAAASUVORK5CYII=') repeat;
-            opacity: 0.03;
-            pointer-events: none;
-            z-index: 1;
-        }
-
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 20px;
-            position: relative;
-            z-index: 2;
-        }
-
-        .header {
-            text-align: center;
-            padding: 40px 20px;
-            position: relative;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .title {
-            font-family: 'Libre Baskerville', serif;
-            font-size: 3.5rem;
-            font-weight: 700;
-            letter-spacing: 4px;
-            margin: 20px 0;
-            background: linear-gradient(135deg, var(--white) 0%, var(--primary-red) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            animation: titleGlow 2s ease-in-out infinite alternate;
-        }
-
-        .logout-btn {
-            position: absolute;
-            right: 20px;
-            top: 50%;
-            transform: translateY(-50%);
-        }
-
-        @keyframes titleGlow {
-            from { filter: drop-shadow(0 0 10px rgba(227, 30, 36, 0.3)); }
-            to { filter: drop-shadow(0 0 20px rgba(227, 30, 36, 0.6)); }
-        }
-
-        .admin-section {
-            background: var(--gray);
-            border: 2px solid var(--primary-red);
-            border-radius: 12px;
-            padding: 30px;
-            margin-bottom: 30px;
-            box-shadow: 0 8px 32px rgba(227, 30, 36, 0.2);
-        }
-
-        .section {
-            background: var(--gray);
-            border-left: 4px solid var(--primary-red);
-            border-radius: 8px;
-            padding: 25px;
-            margin-bottom: 30px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
-            transition: all 0.3s ease;
-        }
-
-        .section:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 30px rgba(227, 30, 36, 0.3);
-        }
-
-        .section-title {
-            font-family: 'Libre Baskerville', serif;
-            font-size: 2rem;
-            font-weight: 700;
-            color: var(--primary-red);
-            margin-bottom: 20px;
-            letter-spacing: 2px;
-            border-bottom: 2px solid var(--light-gray);
-            padding-bottom: 10px;
-        }
-
-        .btn {
-            background: linear-gradient(135deg, var(--primary-red) 0%, var(--dark-red) 100%);
-            color: var(--white);
-            border: none;
-            padding: 12px 28px;
-            font-size: 1rem;
-            font-weight: 600;
-            font-family: 'Libre Baskerville', serif;
-            letter-spacing: 1px;
-            cursor: pointer;
-            border-radius: 6px;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            box-shadow: 0 4px 15px rgba(227, 30, 36, 0.3);
-        }
-
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 25px rgba(227, 30, 36, 0.5);
-        }
-
-        .btn:active {
-            transform: translateY(0);
-        }
-
-        .btn-secondary {
-            background: var(--light-gray);
-            border: 1px solid var(--primary-red);
-        }
-
-        .btn-danger {
-            background: linear-gradient(135deg, #c41e3a 0%, #8b1429 100%);
-        }
-
-        input[type="text"],
-        input[type="password"],
-        input[type="number"],
-        select,
-        textarea {
-            width: 100%;
-            padding: 12px;
-            margin: 8px 0;
-            background: var(--light-gray);
-            border: 1px solid var(--primary-red);
-            border-radius: 6px;
-            color: var(--white);
-            font-family: 'Libre Baskerville', serif;
-            font-size: 1rem;
-        }
-
-        textarea {
-            min-height: 100px;
-            resize: vertical;
-        }
-
-        input:focus,
-        select:focus,
-        textarea:focus {
-            outline: none;
-            border-color: var(--white);
-            box-shadow: 0 0 10px rgba(227, 30, 36, 0.4);
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 15px;
-        }
-
-        th {
-            background: linear-gradient(135deg, var(--primary-red) 0%, var(--dark-red) 100%);
-            color: var(--white);
-            padding: 15px;
-            text-align: left;
-            font-family: 'Libre Baskerville', serif;
-            font-size: 1.2rem;
-            font-weight: 700;
-            letter-spacing: 1px;
-        }
-
-        td {
-            padding: 12px 15px;
-            border-bottom: 1px solid var(--light-gray);
-        }
-
-        tr:hover {
-            background: var(--light-gray);
-        }
-
-        .match {
-            background: var(--light-gray);
-            padding: 15px;
-            margin: 10px 0;
-            border-radius: 6px;
-            border-left: 3px solid var(--primary-red);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            transition: all 0.3s ease;
-        }
-
-        .match:hover {
-            background: rgba(227, 30, 36, 0.1);
-            transform: translateX(5px);
-        }
-
-        .match-players {
-            font-size: 1.1rem;
-            font-weight: 500;
-        }
-
-        .match-vs {
-            color: var(--primary-red);
-            font-weight: 700;
-            margin: 0 15px;
-        }
-
-        .result-select {
-            width: auto;
-            min-width: 120px;
-        }
-
-        .hidden {
-            display: none;
-        }
-
-        .login-form {
-            max-width: 400px;
-            margin: 0 auto;
-        }
-
-        .player-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 15px;
-            margin-top: 15px;
-        }
-
-        .player-item {
-            background: var(--light-gray);
-            padding: 15px;
-            border-radius: 6px;
-            border: 1px solid var(--primary-red);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            transition: all 0.3s ease;
-        }
-
-        .player-item:hover {
-            background: rgba(227, 30, 36, 0.1);
-            transform: scale(1.02);
-        }
-
-        .playoff-bracket {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
-            margin-top: 20px;
-        }
-
-        .playoff-match {
-            background: linear-gradient(135deg, var(--light-gray) 0%, var(--gray) 100%);
-            padding: 20px;
-            border-radius: 8px;
-            border: 2px solid var(--primary-red);
-            text-align: center;
-        }
-
-        .playoff-match.final {
-            grid-column: 1 / -1;
-            max-width: 600px;
-            margin: 0 auto;
-            background: linear-gradient(135deg, var(--dark-red) 0%, var(--primary-red) 100%);
-        }
-
-        .trophy {
-            font-size: 3rem;
-            margin: 10px 0;
-        }
-
-        .contact {
-            text-align: center;
-            padding: 30px;
-            margin-top: 40px;
-            border-top: 2px solid var(--primary-red);
-        }
-
-        .contact a {
-            color: var(--primary-red);
-            text-decoration: none;
-            font-weight: 600;
-            transition: color 0.3s ease;
-        }
-
-        .contact a:hover {
-            color: var(--white);
-        }
-
-        .news-item {
-            background: var(--light-gray);
-            padding: 15px;
-            margin: 10px 0;
-            border-radius: 6px;
-            border-left: 3px solid var(--primary-red);
-        }
-
-        .news-date {
-            color: var(--primary-red);
-            font-size: 0.9rem;
-            font-weight: 600;
-            margin-bottom: 8px;
-        }
-
-        .rules-list {
-            list-style: none;
-            padding: 0;
-        }
-
-        .rules-list li {
-            background: var(--light-gray);
-            padding: 15px;
-            margin: 10px 0;
-            border-radius: 6px;
-            border-left: 3px solid var(--primary-red);
-            position: relative;
-            padding-left: 50px;
-        }
-
-        .rules-list li:before {
-            content: attr(data-number);
-            position: absolute;
-            left: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--primary-red);
-            font-weight: 700;
-            font-size: 1.3rem;
-        }
-
-        @media (max-width: 768px) {
-            .title {
-                font-size: 2rem;
-            }
-
-            .logout-btn {
-                position: static;
-                transform: none;
-                margin-top: 20px;
-            }
-
-            .header {
-                flex-direction: column;
-            }
-
-            .playoff-bracket {
-                grid-template-columns: 1fr;
-            }
-
-            th, td {
-                padding: 8px;
-                font-size: 0.9rem;
-            }
-        }
-    </style>
+<meta charset="UTF-8">
+<title>Turnierverwaltung</title>
+<style>
+body { font-family: Arial; background:#000;color:#fff; margin:0; padding:0;}
+header { background:#c0392b; padding:10px; display:flex; align-items:center;}
+header img { height:50px; margin-right:20px;}
+header h1 { margin:0; }
+nav button { margin-left:10px; padding:5px 10px; cursor:pointer; }
+section { padding:20px;}
+textarea, input[type=text] { width:100%; }
+table { width:100%; border-collapse: collapse; margin-top:10px;}
+table, th, td { border:1px solid #fff; text-align:center; }
+th, td { padding:8px; }
+button { padding:5px 10px; margin-top:5px; cursor:pointer;}
+#logoutBtn { background:#fff; color:#c0392b; border:none;}
+</style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1 class="title">ISN Chess League</h1>
-            <button class="btn btn-danger logout-btn hidden" id="logoutBtn" onclick="logout()">Abmelden</button>
-        </div>
 
-        <!-- Admin Login -->
-        <div id="loginSection" class="admin-section">
-            <h2 class="section-title">Admin Login</h2>
-            <div class="login-form">
-                <input type="password" id="passwordInput" placeholder="Admin-Passwort eingeben">
-                <button class="btn" onclick="login()">Anmelden</button>
-            </div>
-        </div>
+<header>
+    <img id="logoPreview" src="" alt="Logo">
+    <h1>Turnierverwaltung</h1>
+    <nav id="adminNav" style="display:none;">
+        <button onclick="showSection('news')">News</button>
+        <button onclick="showSection('players')">Tabelle</button>
+        <button onclick="showSection('matches')">Matches</button>
+        <button onclick="showSection('playoffs')">Playoffs</button>
+        <button id="logoutBtn" onclick="logout()">Logout</button>
+    </nav>
+</header>
 
-        <!-- News/Announcements Section -->
-        <div class="section">
-            <h2 class="section-title">📢 News & Ankündigungen</h2>
-            <div id="adminNewsPanel" class="hidden" style="margin-bottom: 20px;">
-                <h3 style="color: var(--primary-red); margin-bottom: 15px; font-size: 1.2rem;">Neue Ankündigung erstellen</h3>
-                <input type="text" id="newsTitle" placeholder="Titel der Ankündigung">
-                <textarea id="newsContent" placeholder="Inhalt der Ankündigung"></textarea>
-                <button class="btn" onclick="addNews()">Ankündigung hinzufügen</button>
-            </div>
-            <div id="newsList">
-                <p style="color: var(--light-gray);">Noch keine Ankündigungen vorhanden.</p>
-            </div>
-        </div>
+<section id="loginSection">
+    <h2>Admin Login</h2>
+    <input type="password" id="password" placeholder="Passwort">
+    <button onclick="login()">Login</button>
+</section>
 
-        <!-- Rules Section -->
-        <div class="section">
-            <h2 class="section-title">📋 Turnierregeln</h2>
-            <div id="adminRulesPanel" class="hidden" style="margin-bottom: 20px;">
-                <h3 style="color: var(--primary-red); margin-bottom: 15px; font-size: 1.2rem;">Neue Regel hinzufügen</h3>
-                <textarea id="newRule" placeholder="Regel eingeben"></textarea>
-                <button class="btn" onclick="addRule()">Regel hinzufügen</button>
-            </div>
-            <ul class="rules-list" id="rulesList">
-                <li data-number="1">Jeder Spieler spielt gegen jeden anderen Spieler genau einmal.</li>
-                <li data-number="2">Sieg = 1 Punkt, Remis = 0,5 Punkte, Niederlage = 0 Punkte.</li>
-                <li data-number="3">Bedenkzeit: 15 Minuten pro Spieler mit 10 Sekunden Inkrement.</li>
-                <li data-number="4">Die Top 4 Spieler qualifizieren sich für die Playoffs.</li>
-                <li data-number="5">Bei Punktgleichheit entscheidet das direkte Duell.</li>
-            </ul>
-        </div>
+<section id="newsSection" style="display:none;">
+    <h2>News & Ankündigungen</h2>
+    <textarea id="newsEditor" rows="5"></textarea><br>
+    <button onclick="saveNews()">Speichern</button>
+    <div id="newsDisplay" style="margin-top:10px;"></div>
+</section>
 
-        <!-- Admin Panel -->
-        <div id="adminPanel" class="hidden">
-            <div class="section">
-                <h2 class="section-title">Spielerverwaltung</h2>
-                <input type="text" id="newPlayerName" placeholder="Spielername">
-                <button class="btn" onclick="addPlayer()">Spieler hinzufügen</button>
-                
-                <div class="player-list" id="playerList"></div>
-            </div>
+<section id="playersSection" style="display:none;">
+    <h2>Spieler Tabelle</h2>
+    <button onclick="addPlayer()">Spieler hinzufügen</button>
+    <table id="playersTable">
+        <thead>
+            <tr>
+                <th>Rang</th>
+                <th>Spielername</th>
+                <th>Spiele</th>
+                <th>Siege</th>
+                <th>Unentschieden</th>
+                <th>Niederlagen</th>
+                <th>Punkte</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</section>
 
-            <div class="section">
-                <h2 class="section-title">Spieltag erstellen</h2>
-                <input type="number" id="roundNumber" placeholder="Spieltag Nummer" min="1">
-                <button class="btn" onclick="generateMatches()">Paarungen generieren</button>
-            </div>
-        </div>
+<section id="matchesSection" style="display:none;">
+    <h2>Matches</h2>
+    <button onclick="generateMatches()">Neue Matches generieren</button>
+    <table id="matchesTable">
+        <thead>
+            <tr>
+                <th>Spiel 1</th><th>Spiel 2</th><th>Ergebnis</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</section>
 
-        <!-- Standings -->
-        <div class="section">
-            <h2 class="section-title">Tabelle</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Rang</th>
-                        <th>Spieler</th>
-                        <th>Spiele</th>
-                        <th>Siege</th>
-                        <th>Unentschieden</th>
-                        <th>Niederlagen</th>
-                        <th>Punkte</th>
-                    </tr>
-                </thead>
-                <tbody id="standingsTable"></tbody>
-            </table>
-        </div>
+<section id="playoffsSection" style="display:none;">
+    <h2>Playoffs</h2>
+    <button onclick="generatePlayoffs()">Playoffs starten</button>
+    <div id="playoffsDisplay" style="margin-top:10px;"></div>
+</section>
 
-        <!-- Matches -->
-        <div class="section">
-            <h2 class="section-title">Spielpaarungen</h2>
-            <div id="matchesList"></div>
-        </div>
+<section>
+    <h2>Kontakt</h2>
+    <p>Email: <a href="mailto:f.frembs@is-neustadt.de">f.frembs@is-neustadt.de</a></p>
+    <input type="file" id="logoUpload">
+</section>
 
-        <!-- Playoffs -->
-        <div class="section">
-            <h2 class="section-title">Playoffs</h2>
-            <button class="btn" onclick="startPlayoffs()" id="startPlayoffsBtn">Playoffs starten</button>
-            <div id="playoffsBracket" class="hidden">
-                <h3 style="text-align: center; margin: 20px 0; font-family: 'Libre Baskerville', serif; font-size: 1.8rem; font-weight: 700; color: var(--primary-red);">Halbfinale</h3>
-                <div class="playoff-bracket">
-                    <div class="playoff-match" id="playoff1"></div>
-                    <div class="playoff-match" id="playoff2"></div>
-                </div>
-                <h3 style="text-align: center; margin: 30px 0 20px; font-family: 'Libre Baskerville', serif; font-size: 1.8rem; font-weight: 700; color: var(--primary-red);">Finale</h3>
-                <div class="playoff-match final" id="finalMatch">
-                    <div class="trophy">🏆</div>
-                    <div id="finalContent">Warte auf Halbfinal-Ergebnisse...</div>
-                </div>
-            </div>
-        </div>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-storage-compat.js"></script>
 
-        <div class="contact">
-            <p>Kontakt: <a href="mailto:sander@is-neustadt.de">sander@is-neustadt.de</a></p>
-        </div>
-    </div>
+<script>
+// Firebase konfigurieren
+const firebaseConfig = {
+    apiKey: "DEINE_API_KEY",
+    authDomain: "deinprojekt.firebaseapp.com",
+    projectId: "deinprojekt",
+    storageBucket: "deinprojekt.appspot.com",
+    messagingSenderId: "XXX",
+    appId: "XXX"
+};
 
-    <script>
-        // Admin password (in production, this should be handled server-side)
-        const ADMIN_PASSWORD = '5082';
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+const storage = firebase.storage();
 
-        let isAdmin = false;
-        let players = [];
-        let matches = [];
-        let playoffMatches = [];
-        let newsItems = [];
-        let rules = [
-            'Jeder Spieler spielt gegen jeden anderen Spieler genau einmal.',
-            'Sieg = 1 Punkt, Remis = 0,5 Punkte, Niederlage = 0 Punkte.',
-            'Bedenkzeit: 15 Minuten pro Spieler mit 10 Sekunden Inkrement.',
-            'Die Top 4 Spieler qualifizieren sich für die Playoffs.',
-            'Bei Punktgleichheit entscheidet das direkte Duell.'
-        ];
+const ADMIN_PASSWORD = "5082";
 
-        // Load data from localStorage
-        function loadData() {
-            const savedPlayers = localStorage.getItem('chessPlayers');
-            const savedMatches = localStorage.getItem('chessMatches');
-            const savedNews = localStorage.getItem('chessNews');
-            const savedRules = localStorage.getItem('chessRules');
-            
-            if (savedPlayers) players = JSON.parse(savedPlayers);
-            if (savedMatches) matches = JSON.parse(savedMatches);
-            if (savedNews) newsItems = JSON.parse(savedNews);
-            if (savedRules) rules = JSON.parse(savedRules);
-            
-            updateUI();
-        }
+function login(){
+    if(document.getElementById("password").value === ADMIN_PASSWORD){
+        localStorage.setItem("loggedIn","true");
+        document.getElementById("loginSection").style.display="none";
+        document.getElementById("adminNav").style.display="block";
+        showSection('news');
+        loadNews();
+        loadPlayers();
+        loadMatches();
+    } else { alert("Falsches Passwort"); }
+}
 
-        // Save data to localStorage
-        function saveData() {
-            localStorage.setItem('chessPlayers', JSON.stringify(players));
-            localStorage.setItem('chessMatches', JSON.stringify(matches));
-            localStorage.setItem('chessNews', JSON.stringify(newsItems));
-            localStorage.setItem('chessRules', JSON.stringify(rules));
-        }
+function logout(){ localStorage.removeItem("loggedIn"); location.reload(); }
+if(localStorage.getItem("loggedIn")==="true"){ login(); }
 
-        // Login function
-        function login() {
-            const password = document.getElementById('passwordInput').value;
-            if (password === ADMIN_PASSWORD) {
-                isAdmin = true;
-                document.getElementById('loginSection').classList.add('hidden');
-                document.getElementById('adminPanel').classList.remove('hidden');
-                document.getElementById('adminNewsPanel').classList.remove('hidden');
-                document.getElementById('adminRulesPanel').classList.remove('hidden');
-                document.getElementById('logoutBtn').classList.remove('hidden');
-                updateUI();
-                alert('Erfolgreich angemeldet!');
-            } else {
-                alert('Falsches Passwort!');
-            }
-        }
+function showSection(id){
+    ['news','players','matches','playoffs'].forEach(s=>{
+        document.getElementById(s+'Section').style.display = (s===id)?'block':'none';
+    });
+}
 
-        // Logout function
-        function logout() {
-            isAdmin = false;
-            document.getElementById('loginSection').classList.remove('hidden');
-            document.getElementById('adminPanel').classList.add('hidden');
-            document.getElementById('adminNewsPanel').classList.add('hidden');
-            document.getElementById('adminRulesPanel').classList.add('hidden');
-            document.getElementById('logoutBtn').classList.add('hidden');
-            document.getElementById('passwordInput').value = '';
-            updateUI();
-        }
+// --- News ---
+async function saveNews(){
+    const content = document.getElementById("newsEditor").value;
+    await db.collection('news').doc('main').set({content});
+    loadNews();
+}
+async function loadNews(){
+    const doc = await db.collection('news').doc('main').get();
+    if(doc.exists){
+        document.getElementById("newsEditor").value = doc.data().content;
+        document.getElementById("newsDisplay").innerHTML = doc.data().content.replace(/\n/g,'<br>');
+    } else { document.getElementById("newsDisplay").innerHTML="Noch keine News."; }
+}
 
-        // Add news item
-        function addNews() {
-            const title = document.getElementById('newsTitle').value.trim();
-            const content = document.getElementById('newsContent').value.trim();
-            
-            if (!title || !content) {
-                alert('Bitte füllen Sie Titel und Inhalt aus!');
-                return;
-            }
+// --- Spieler Tabelle ---
+async function loadPlayers(){
+    const snapshot = await db.collection('players').get();
+    const tbody = document.querySelector('#playersTable tbody');
+    tbody.innerHTML="";
+    let players = [];
+    snapshot.forEach(doc=>players.push({...doc.data(), id:doc.id}));
+    // Punkte berechnen
+    players.forEach(p=>{
+        p.spiele = p.siege + p.unentschieden + p.niederlagen;
+        p.punkte = p.siege*1 + p.unentschieden*0.5;
+    });
+    // Rang sortieren
+    players.sort((a,b)=>b.punkte-a.punkte);
+    players.forEach((p,i)=>{
+        const tr=document.createElement('tr');
+        tr.innerHTML=`<td>${i+1}</td>
+            <td>${p.name}</td>
+            <td>${p.spiele}</td>
+            <td>${p.siege}</td>
+            <td>${p.unentschieden}</td>
+            <td>${p.niederlagen}</td>
+            <td>${p.punkte}</td>`;
+        tbody.appendChild(tr);
+    });
+}
 
-            const newsItem = {
-                id: Date.now(),
-                title: title,
-                content: content,
-                date: new Date().toLocaleDateString('de-DE')
-            };
+async function addPlayer(){
+    const name = prompt("Spielername:");
+    if(!name) return;
+    await db.collection('players').add({name, siege:0, unentschieden:0, niederlagen:0});
+    loadPlayers();
+}
 
-            newsItems.unshift(newsItem); // Add to beginning of array
-            document.getElementById('newsTitle').value = '';
-            document.getElementById('newsContent').value = '';
-            saveData();
-            updateUI();
-        }
+// --- Matches ---
+async function generateMatches(){
+    const snapshot = await db.collection('players').get();
+    let players=[];
+    snapshot.forEach(doc=>players.push(doc.id));
+    let pairs=[];
+    for(let i=0;i<players.length;i+=2){
+        if(players[i+1]) pairs.push([players[i],players[i+1]]);
+    }
+    // Zufälliges Ergebnis
+    pairs.forEach(async p=>{
+        let r=Math.random();
+        let result;
+        if(r<0.45){ result='Sieg Spieler1'; await updateScore(p[0],'sieg'); await updateScore(p[1],'niederlage'); }
+        else if(r<0.9){ result='Sieg Spieler2'; await updateScore(p[1],'sieg'); await updateScore(p[0],'niederlage'); }
+        else{ result='Unentschieden'; await updateScore(p[0],'unentschieden'); await updateScore(p[1],'unentschieden'); }
+        await db.collection('matches').add({spieler1:p[0],spieler2:p[1],result,resultText:result,date:new Date()});
+    });
+    loadMatches();
+}
 
-        // Delete news item
-        function deleteNews(id) {
-            if (confirm('Möchten Sie diese Ankündigung wirklich löschen?')) {
-                newsItems = newsItems.filter(item => item.id !== id);
-                saveData();
-                updateUI();
-            }
-        }
+async function loadMatches(){
+    const snapshot = await db.collection('matches').orderBy('date').get();
+    const tbody = document.querySelector('#matchesTable tbody');
+    tbody.innerHTML="";
+    snapshot.forEach(doc=>{
+        const data = doc.data();
+        const tr=document.createElement('tr');
+        tr.innerHTML=`<td>${data.spieler1}</td><td>${data.spieler2}</td><td>${data.resultText}</td>`;
+        tbody.appendChild(tr);
+    });
+}
 
-        // Add rule
-        function addRule() {
-            const ruleText = document.getElementById('newRule').value.trim();
-            
-            if (!ruleText) {
-                alert('Bitte geben Sie eine Regel ein!');
-                return;
-            }
+// Spieler Punkte aktualisieren
+async function updateScore(playerId,type){
+    const doc = await db.collection('players').doc(playerId).get();
+    const data = doc.data();
+    if(type==='sieg') data.siege++; else if(type==='niederlage') data.niederlagen++; else data.unentschieden++;
+    await db.collection('players').doc(playerId).set(data);
+}
 
-            rules.push(ruleText);
-            document.getElementById('newRule').value = '';
-            saveData();
-            updateUI();
-        }
+// --- Playoffs ---
+async function generatePlayoffs(){
+    const snapshot = await db.collection('players').get();
+    let players=[];
+    snapshot.forEach(doc=>players.push({...doc.data(),id:doc.id}));
+    players.forEach(p=>p.punkte=p.siege+0.5*p.unentschieden);
+    players.sort((a,b)=>b.punkte-a.punkte);
+    let top4 = players.slice(0,4);
+    let semifinals = [[top4[0],top4[3]],[top4[1],top4[2]]];
+    let results="";
+    semifinals.forEach((match,i)=>{
+        let winner = Math.random()<0.5?match[0]:match[1];
+        results+=`Halbfinale ${i+1}: ${match[0].name} vs ${match[1].name} → Sieger: ${winner.name}<br>`;
+    });
+    document.getElementById('playoffsDisplay').innerHTML = results;
+}
 
-        // Delete rule
-        function deleteRule(index) {
-            if (confirm('Möchten Sie diese Regel wirklich löschen?')) {
-                rules.splice(index, 1);
-                saveData();
-                updateUI();
-            }
-        }
+// --- Logo Upload ---
+document.getElementById('logoUpload').addEventListener('change',async function(e){
+    const file = e.target.files[0];
+    if(!file) return;
+    const ref = storage.ref('logo/'+file.name);
+    await ref.put(file);
+    const url = await ref.getDownloadURL();
+    document.getElementById('logoPreview').src = url;
+});
 
-        // Add player
-        function addPlayer() {
-            const playerName = document.getElementById('newPlayerName').value.trim();
-            if (!playerName) {
-                alert('Bitte Namen eingeben!');
-                return;
-            }
-            if (players.find(p => p.name === playerName)) {
-                alert('Spieler existiert bereits!');
-                return;
-            }
-            players.push({
-                name: playerName,
-                wins: 0,
-                draws: 0,
-                losses: 0,
-                points: 0,
-                games: 0
-            });
-            document.getElementById('newPlayerName').value = '';
-            saveData();
-            updateUI();
-        }
-
-        // Remove player
-        function removePlayer(playerName) {
-            if (confirm(`Möchten Sie ${playerName} wirklich löschen?`)) {
-                players = players.filter(p => p.name !== playerName);
-                matches = matches.filter(m => m.player1 !== playerName && m.player2 !== playerName);
-                saveData();
-                updateUI();
-            }
-        }
-
-        // Generate matches using round-robin
-        function generateMatches() {
-            const round = parseInt(document.getElementById('roundNumber').value);
-            if (!round || round < 1) {
-                alert('Bitte gültige Spieltag-Nummer eingeben!');
-                return;
-            }
-
-            if (players.length < 2) {
-                alert('Mindestens 2 Spieler benötigt!');
-                return;
-            }
-
-            // Check if round already exists
-            if (matches.some(m => m.round === round)) {
-                alert('Dieser Spieltag existiert bereits!');
-                return;
-            }
-
-            let playerList = [...players.map(p => p.name)];
-            
-            // If odd number of players, add a "bye"
-            if (playerList.length % 2 !== 0) {
-                playerList.push('BYE');
-            }
-
-            const n = playerList.length;
-            const halfSize = n / 2;
-
-            // Generate pairings for this round
-            const roundPairings = [];
-            const roundIndex = (round - 1) % (n - 1);
-            
-            // Rotate players (keeping first player fixed for round-robin)
-            const rotatedPlayers = [playerList[0]];
-            for (let i = 0; i < n - 1; i++) {
-                const idx = (i + roundIndex) % (n - 1);
-                rotatedPlayers.push(playerList[idx + 1]);
-            }
-
-            // Create matches
-            for (let i = 0; i < halfSize; i++) {
-                const p1 = rotatedPlayers[i];
-                const p2 = rotatedPlayers[n - 1 - i];
-                
-                if (p1 !== 'BYE' && p2 !== 'BYE') {
-                    roundPairings.push({
-                        round: round,
-                        player1: p1,
-                        player2: p2,
-                        result: null
-                    });
-                }
-            }
-
-            matches.push(...roundPairings);
-            saveData();
-            updateUI();
-        }
-
-        // Update match result
-        function updateMatchResult(matchIndex, result) {
-            const match = matches[matchIndex];
-            const player1 = players.find(p => p.name === match.player1);
-            const player2 = players.find(p => p.name === match.player2);
-
-            // Revert old result
-            if (match.result) {
-                if (match.result === '1-0') {
-                    player1.wins--;
-                    player1.points--;
-                    player2.losses--;
-                    player1.games--;
-                    player2.games--;
-                } else if (match.result === '0-1') {
-                    player2.wins--;
-                    player2.points--;
-                    player1.losses--;
-                    player1.games--;
-                    player2.games--;
-                } else if (match.result === '0.5-0.5') {
-                    player1.draws--;
-                    player2.draws--;
-                    player1.points -= 0.5;
-                    player2.points -= 0.5;
-                    player1.games--;
-                    player2.games--;
-                }
-            }
-
-            // Apply new result
-            match.result = result;
-            if (result === '1-0') {
-                player1.wins++;
-                player1.points++;
-                player2.losses++;
-                player1.games++;
-                player2.games++;
-            } else if (result === '0-1') {
-                player2.wins++;
-                player2.points++;
-                player1.losses++;
-                player1.games++;
-                player2.games++;
-            } else if (result === '0.5-0.5') {
-                player1.draws++;
-                player2.draws++;
-                player1.points += 0.5;
-                player2.points += 0.5;
-                player1.games++;
-                player2.games++;
-            }
-
-            saveData();
-            updateUI();
-        }
-
-        // Update playoff match result
-        function updatePlayoffResult(matchId, winner) {
-            const match = playoffMatches.find(m => m.id === matchId);
-            if (match) {
-                match.winner = winner;
-                updateUI();
-            }
-        }
-
-        // Start playoffs
-        function startPlayoffs() {
-            if (players.length < 4) {
-                alert('Mindestens 4 Spieler benötigt für Playoffs!');
-                return;
-            }
-
-            const sortedPlayers = [...players].sort((a, b) => b.points - a.points);
-            const top4 = sortedPlayers.slice(0, 4);
-
-            playoffMatches = [
-                { id: 'semi1', player1: top4[0].name, player2: top4[3].name, winner: null },
-                { id: 'semi2', player1: top4[1].name, player2: top4[2].name, winner: null },
-                { id: 'final', player1: null, player2: null, winner: null }
-            ];
-
-            document.getElementById('playoffsBracket').classList.remove('hidden');
-            document.getElementById('startPlayoffsBtn').classList.add('hidden');
-            updateUI();
-        }
-
-        // Update UI
-        function updateUI() {
-            // Update news
-            const newsList = document.getElementById('newsList');
-            if (newsItems.length === 0) {
-                newsList.innerHTML = '<p style="color: var(--light-gray);">Noch keine Ankündigungen vorhanden.</p>';
-            } else {
-                newsList.innerHTML = '';
-                newsItems.forEach(item => {
-                    const newsDiv = document.createElement('div');
-                    newsDiv.className = 'news-item';
-                    newsDiv.innerHTML = `
-                        <div class="news-date">${item.date}</div>
-                        <h3 style="color: var(--primary-red); margin-bottom: 10px; font-size: 1.3rem;">${item.title}</h3>
-                        <p>${item.content}</p>
-                        ${isAdmin ? `<button class="btn btn-danger" style="margin-top: 10px; padding: 6px 12px; font-size: 0.9rem;" onclick="deleteNews(${item.id})">Löschen</button>` : ''}
-                    `;
-                    newsList.appendChild(newsDiv);
-                });
-            }
-
-            // Update rules
-            const rulesList = document.getElementById('rulesList');
-            rulesList.innerHTML = '';
-            rules.forEach((rule, index) => {
-                const li = document.createElement('li');
-                li.setAttribute('data-number', index + 1);
-                li.innerHTML = `
-                    ${rule}
-                    ${isAdmin ? `<button class="btn btn-danger" style="margin-left: 15px; padding: 6px 12px; font-size: 0.9rem;" onclick="deleteRule(${index})">Löschen</button>` : ''}
-                `;
-                rulesList.appendChild(li);
-            });
-
-            // Update player list
-            const playerListDiv = document.getElementById('playerList');
-            playerListDiv.innerHTML = '';
-            players.forEach(player => {
-                const playerDiv = document.createElement('div');
-                playerDiv.className = 'player-item';
-                playerDiv.innerHTML = `
-                    <span>${player.name}</span>
-                    ${isAdmin ? `<button class="btn btn-danger" style="padding: 6px 12px; font-size: 0.9rem;" onclick="removePlayer('${player.name}')">Löschen</button>` : ''}
-                `;
-                playerListDiv.appendChild(playerDiv);
-            });
-
-            // Update standings
-            const standingsTable = document.getElementById('standingsTable');
-            const sortedPlayers = [...players].sort((a, b) => b.points - a.points);
-            standingsTable.innerHTML = '';
-            sortedPlayers.forEach((player, index) => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td><strong>${index + 1}</strong></td>
-                    <td><strong>${player.name}</strong></td>
-                    <td>${player.games}</td>
-                    <td>${player.wins}</td>
-                    <td>${player.draws}</td>
-                    <td>${player.losses}</td>
-                    <td><strong>${player.points.toFixed(1)}</strong></td>
-                `;
-                standingsTable.appendChild(row);
-            });
-
-            // Update matches
-            const matchesList = document.getElementById('matchesList');
-            matchesList.innerHTML = '';
-            
-            const matchesByRound = {};
-            matches.forEach(match => {
-                if (!matchesByRound[match.round]) {
-                    matchesByRound[match.round] = [];
-                }
-                matchesByRound[match.round].push(match);
-            });
-
-            Object.keys(matchesByRound).sort((a, b) => b - a).forEach(round => {
-                const roundDiv = document.createElement('div');
-                roundDiv.style.marginBottom = '25px';
-                roundDiv.innerHTML = `<h3 style="color: var(--primary-red); margin-bottom: 15px; font-family: 'Libre Baskerville', serif; font-size: 1.5rem; font-weight: 700; letter-spacing: 2px;">Spieltag ${round}</h3>`;
-                
-                matchesByRound[round].forEach((match, idx) => {
-                    const matchDiv = document.createElement('div');
-                    matchDiv.className = 'match';
-                    const globalIndex = matches.indexOf(match);
-                    
-                    matchDiv.innerHTML = `
-                        <div class="match-players">
-                            <span>${match.player1}</span>
-                            <span class="match-vs">VS</span>
-                            <span>${match.player2}</span>
-                        </div>
-                        <select class="result-select" onchange="updateMatchResult(${globalIndex}, this.value)" ${!isAdmin ? 'disabled' : ''}>
-                            <option value="">Ergebnis wählen</option>
-                            <option value="1-0" ${match.result === '1-0' ? 'selected' : ''}>1-0 (${match.player1} gewinnt)</option>
-                            <option value="0.5-0.5" ${match.result === '0.5-0.5' ? 'selected' : ''}>0.5-0.5 (Unentschieden)</option>
-                            <option value="0-1" ${match.result === '0-1' ? 'selected' : ''}>0-1 (${match.player2} gewinnt)</option>
-                        </select>
-                    `;
-                    roundDiv.appendChild(matchDiv);
-                });
-                
-                matchesList.appendChild(roundDiv);
-            });
-
-            // Update playoffs
-            if (playoffMatches.length > 0) {
-                const semi1 = playoffMatches.find(m => m.id === 'semi1');
-                const semi2 = playoffMatches.find(m => m.id === 'semi2');
-                const final = playoffMatches.find(m => m.id === 'final');
-
-                document.getElementById('playoff1').innerHTML = `
-                    <h4 style="margin-bottom: 15px; font-family: 'Libre Baskerville', serif; font-size: 1.3rem; font-weight: 700;">Halbfinale 1</h4>
-                    <div style="font-size: 1.1rem; margin: 15px 0;">${semi1.player1} <span style="color: var(--primary-red);">VS</span> ${semi1.player2}</div>
-                    ${isAdmin ? `
-                        <select onchange="updatePlayoffResult('semi1', this.value)" style="margin-top: 10px;">
-                            <option value="">Gewinner wählen</option>
-                            <option value="${semi1.player1}" ${semi1.winner === semi1.player1 ? 'selected' : ''}>${semi1.player1}</option>
-                            <option value="${semi1.player2}" ${semi1.winner === semi1.player2 ? 'selected' : ''}>${semi1.player2}</option>
-                        </select>
-                    ` : ''}
-                    ${semi1.winner ? `<div style="margin-top: 15px; color: var(--primary-red); font-weight: 700;">Gewinner: ${semi1.winner}</div>` : ''}
-                `;
-
-                document.getElementById('playoff2').innerHTML = `
-                    <h4 style="margin-bottom: 15px; font-family: 'Libre Baskerville', serif; font-size: 1.3rem; font-weight: 700;">Halbfinale 2</h4>
-                    <div style="font-size: 1.1rem; margin: 15px 0;">${semi2.player1} <span style="color: var(--primary-red);">VS</span> ${semi2.player2}</div>
-                    ${isAdmin ? `
-                        <select onchange="updatePlayoffResult('semi2', this.value)" style="margin-top: 10px;">
-                            <option value="">Gewinner wählen</option>
-                            <option value="${semi2.player1}" ${semi2.winner === semi2.player1 ? 'selected' : ''}>${semi2.player1}</option>
-                            <option value="${semi2.player2}" ${semi2.winner === semi2.player2 ? 'selected' : ''}>${semi2.player2}</option>
-                        </select>
-                    ` : ''}
-                    ${semi2.winner ? `<div style="margin-top: 15px; color: var(--primary-red); font-weight: 700;">Gewinner: ${semi2.winner}</div>` : ''}
-                `;
-
-                if (semi1.winner && semi2.winner) {
-                    final.player1 = semi1.winner;
-                    final.player2 = semi2.winner;
-
-                    document.getElementById('finalContent').innerHTML = `
-                        <div style="font-size: 1.3rem; margin: 15px 0; font-weight: 700;">${final.player1} <span style="color: var(--white);">VS</span> ${final.player2}</div>
-                        ${isAdmin ? `
-                            <select onchange="updatePlayoffResult('final', this.value)" style="margin-top: 15px;">
-                                <option value="">Champion wählen</option>
-                                <option value="${final.player1}" ${final.winner === final.player1 ? 'selected' : ''}>${final.player1}</option>
-                                <option value="${final.player2}" ${final.winner === final.player2 ? 'selected' : ''}>${final.player2}</option>
-                            </select>
-                        ` : ''}
-                        ${final.winner ? `<div style="margin-top: 20px; font-size: 2rem; font-family: 'Libre Baskerville', serif; font-weight: 700; color: var(--white);">🏆 Champion: ${final.winner} 🏆</div>` : ''}
-                    `;
-                }
-            }
-        }
-
-        // Initialize on page load
-        window.onload = function() {
-            loadData();
-        };
-    </script>
+</script>
 </body>
 </html>
